@@ -24,6 +24,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import PersonIcon from '@mui/icons-material/Person';
 
+// Import the Table component
+import Table from '../../Table';
+
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -94,6 +97,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function Dashboard() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [showTable, setShowTable] = React.useState(false); // State to toggle Table component visibility
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -101,6 +105,11 @@ export default function Dashboard() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleTableReservationClick = () => {
+    // Toggle visibility of Table component
+    setShowTable(!showTable);
   };
 
   return (
@@ -150,62 +159,60 @@ export default function Dashboard() {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-          <ListItemButton>
-          <ListItemIcon>
-           <BorderColorIcon/>
-          </ListItemIcon>
-          <ListItemText primary={"Orders"} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton>
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText primary={"Menu Mangement"} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton>
-          <ListItemIcon>
-            <TableBarIcon/>
-          </ListItemIcon>
-          <ListItemText primary={"Table reservation"} />
-          </ListItemButton>
-        </ListItem>
-
-        </List>
-        <Divider />
-      <List>
-        {['Setting', 'Support'].map((text, index) => (
-          <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <SettingsIcon /> : <HelpOutlineIcon />}
+                <BorderColorIcon/>
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={"Orders"} />
             </ListItemButton>
           </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List className='User'>
-      <ListItem disablePadding>
-          <ListItemButton>
-          <ListItemIcon>
-            <PersonIcon></PersonIcon>
-          </ListItemIcon>
-          <ListItemText primary={"user"} />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    
-
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Menu Mangement"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding onClick={handleTableReservationClick}>
+            <ListItemButton>
+              <ListItemIcon>
+                <TableBarIcon/>
+              </ListItemIcon>
+              <ListItemText primary={"Table reservation"} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          {['Setting', 'Support'].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <SettingsIcon /> : <HelpOutlineIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List className='User'>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <PersonIcon></PersonIcon>
+              </ListItemIcon>
+              <ListItemText primary={"user"} />
+            </ListItemButton>
+          </ListItem>
+        </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Typography paragraph>
           {/* Main content */}
+          {showTable && <Table />} {/* Render Table component when showTable is true */}
         </Typography>
       </Box>
     </Box>
