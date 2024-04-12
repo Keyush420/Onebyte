@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-// import './Login.css';
+import React, { useState } from 'react';
 import '../../App.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Axios from "axios"
@@ -14,40 +13,38 @@ import { BsFillShieldLockFill } from 'react-icons/bs';
 import { AiOutlineSwapRight } from 'react-icons/ai';
 
 const Login = () => {
+  const navigate = useNavigate(); // Use useNavigate hook
 
-   // useState Hook to store inputs
-   const [username, setUsername] = useState('');
-   const [password, setPassword] = useState('');
-   const navigateTo = useNavigate()
+  // useState Hook to store inputs
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-   const handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault(); // Prevent default form submission behavior
-    createUser(username, password); // Call createUser function
+    loginUser(); // Call loginUser function
   };
 
-   // Function to login user
-   const loginUser = (e) => {
-       e.preventDefault();
-       // Send POST request to server
-       Axios.post('http://localhost:3002/login', {
-           username: username,
-           password: password,
-       })
-           .then((response) => {
-               console.log(response);
+  // Function to login user
+  const loginUser = () => {
+    // Send POST request to server
+    Axios.post('http://localhost:3002/login', {
+      username: username,
+      password: password,
+    })
+      .then((response) => {
+        console.log(response);
 
-               if(response.data.message) {
-                navigateTo('/')
-               }
+        if (response.data.message) {
+          navigate('/') // Redirect to '/' if login fails
+        } else {
+          navigate('/dashboard') // Redirect to '/dashboard' if login succeeds
+        }
+      })
+      .catch((error) => {
+        console.error('Login error:', error);
+      });
+  };
 
-               else{
-                navigateTo('/dashboard')
-               }
-           })
-           .catch((error) => {
-               console.error('Login error:', error);
-           });
-   };
   return (
     <div className='loginPage flex'>
       <div className='container flex'>
@@ -66,7 +63,7 @@ const Login = () => {
               <button className='btn'>Sign Up</button>
             </Link>
           </div>
-        </div> 
+        </div>
 
         <div className='formDiv flex'>
           <div className="headerDiv">
@@ -74,7 +71,7 @@ const Login = () => {
             <h3>Welcome Back!</h3>
           </div>
 
-          <form onSubmit={handleSubmit}className='form grid'>
+          <form onSubmit={handleSubmit} className='form grid'>
             <span className='message'>Login Status will go here</span>
 
             <div className="inputDiv">
@@ -93,20 +90,18 @@ const Login = () => {
               </div>
             </div>
 
-            <button type='submit' className='btn flex' onClick={loginUser}>
+            <button type='submit' className='btn flex'>
               <span>Login</span>
               <AiOutlineSwapRight className='icon'/>
-            </button> 
-
-            {/* <a href="/dashboard">Dashboard</a> */}
+            </button>
 
             <span className='forgotPassword'>
               Forgot Your Password? <a href="">Click Here</a>
-            </span>  
+            </span>
           </form>
         </div>
 
-      </div>    
+      </div>
     </div>
   )
 }

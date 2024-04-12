@@ -56,7 +56,10 @@
 
 
 
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
+
+import axios from 'axios';
 import './Table.css'; // Import CSS file for styling
 
 const Table = () => {
@@ -66,6 +69,19 @@ const Table = () => {
     price: '',
     imageUrl: ''
   });
+
+  const fetchTables = async () => {
+    try {
+      const response = await axios.get('http://localhost:3002/tables');
+      setTables(response.data);
+    } catch (error) {
+      console.error('Error fetching tables:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTables();
+  }, []); // Fetch tables on component mount
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
