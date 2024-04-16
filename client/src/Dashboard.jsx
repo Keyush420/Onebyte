@@ -25,8 +25,8 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import PersonIcon from '@mui/icons-material/Person';
 
 // Import the Table component
-import Table from '../../Table';
-import Menu from '../../Menu';
+import Table from './Table';
+import Menu from './Menu';
 
 const drawerWidth = 240;
 
@@ -98,8 +98,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function Dashboard() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [showTable, setShowTable] = React.useState(false);
-  const [showMenu, setShowMenu] = React.useState(false);
+  const [showTable, setShowTable] = React.useState(false); // State to toggle Table component visibility
+  const [showMenu, setShowMenu] = React.useState(false); 
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -109,14 +109,17 @@ export default function Dashboard() {
     setOpen(false);
   };
 
-  const handleTableReservationClick = () => {
-    setShowTable(true);
-    setShowMenu(false); // Hide Menu component if it's currently shown
-  };
 
+  const handleTableReservationClick = () => {
+    // Toggle visibility of Table component
+    setShowTable(true);
+    setShowMenu(false); // Ensure Menu component is hidden
+  };
+  
   const handleMenuManagementClick = () => {
+    // Toggle visibility of Menu component
     setShowMenu(true);
-    setShowTable(false); // Hide Table component if it's currently shown
+    setShowTable(false); // Ensure Table component is hidden
   };
 
   return (
@@ -178,7 +181,7 @@ export default function Dashboard() {
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
-              <ListItemText primary={"Menu Management"} />
+              <ListItemText primary={"Menu Mangement"} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding onClick={handleTableReservationClick}>
@@ -220,7 +223,7 @@ export default function Dashboard() {
         <Typography paragraph>
           {/* Main content */}
           {showTable && <Table />} {/* Render Table component when showTable is true */}
-          {showMenu && <Menu />} {/* Render Menu component when showMenu is true */}
+          {showMenu && <Menu />} {/* Render Table component when showTable is true */}
         </Typography>
       </Box>
     </Box>

@@ -73,28 +73,24 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Express backend route to fetch all tables
-app.get('/tables', async (req, res) => {
-    try {
-      const tables = await db.query('SELECT * FROM tables');
-      res.json(tables);
-    } catch (error) {
-      console.error('Error fetching tables:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
-  
-  // Express backend route to add a new table
-  app.post('/tables', async (req, res) => {
-    const { name, price, imageUrl } = req.body;
-    try {
-      await db.query('INSERT INTO tables (name, price, imageUrl) VALUES (?, ?, ?)', [name, price, imageUrl]);
-      res.status(201).json({ message: 'Table added successfully' });
-    } catch (error) {
-      console.error('Error adding table:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
-  
+// Create a route to add reservations
+app.post('/api/reservations', (req, res) => {
+    const { name, guestNumber, status, location } = req.body;
 
+    if (!name || !guestNumber || !status || !location) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
 
+    const SQL = 'INSERT INTO reservations (name, guest_number, status, location) VALUES (?, ?, ?, ?)';
+    const values = [name, guestNumber, status, location];
+
+    db.query(SQL, values, (err, results) => {
+        if (err) {
+            console.error('Error inserting reservation:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        console.log('Reservation added successfully!');
+        res.status(201).json({ message: 'Reservation added!' });
+    });
+});

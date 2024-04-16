@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Table.css';
+import './Menu.css';
 
 const Menu = () => {
   const [name, setName] = useState('');
@@ -78,3 +78,4 @@ const Menu = () => {
 };
 
 export default Menu;
+

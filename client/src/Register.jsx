@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 // import './Register.css';
-import '../../App.css';
+import './App.css';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 
 // Import our assets
-import video from '../../LoginAssets/video.mp4';
-import logo from '../../LoginAssets/logo.jpg';
+import video from './LoginAssets/video.mp4';
+import logo from './LoginAssets/logo.jpg';
 
 // Imported Icons
 import { MdMarkEmailRead } from 'react-icons/md';

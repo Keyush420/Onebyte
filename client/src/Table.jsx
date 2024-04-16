@@ -1,144 +1,128 @@
-// import React, { useState } from 'react';
-// import './Table.css'; // Import CSS file for styling
-
-// const Table = () => {
-//   const [tables, setTables] = useState([
-//     { name: 'Two seat Table', price: 500, imageUrl: 'https://img.freepik.com/premium-photo/sign-with-text-10-off-restaurant_872074-21405.jpg?w=1060' },
-//     { name: 'Single Sitting', price: 350, imageUrl: 'https://img.freepik.com/free-photo/businessman-with-protective-face-mask-using-touchpad-cafe_637285-8913.jpg?size=626&ext=jpg&ga=GA1.1.1927692380.1712591530&semt=ais' },
-//     { name: 'Combo Table Sitting', price: 900, imageUrl: 'https://img.freepik.com/free-photo/happy-couple-making-order-cafe-while-waiter-is-showing-them-menu-digital-table_637285-529.jpg?w=1480&t=st=1712591833~exp=1712592433~hmac=bc9135beee3bce15e8945fbe589fbec0987521205417d207dfca20c936b27caf' }
-//   ]);
-
-//   const [newTable, setNewTable] = useState({
-//     name: '',
-//     price: '',
-//     imageUrl: ''
-//   });
-
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setNewTable({ ...newTable, [name]: value });
-//   };
-
-//   const handleAddTable = () => {
-//     setTables([...tables, newTable]);
-//     setNewTable({ name: '', price: '', imageUrl: '' }); // Clear input fields after adding the table
-//     console.log('New Table Added:', newTable);
-//   };
-
-//   return (
-//     <div>
-//       <div className="table-header">
-//         <h2>Table For Reservation</h2>
-//         <div>
-//           <button onClick={handleAddTable} className="add-table-btn">Add Table</button>
-//           <button onClick={() => console.log('Update Table clicked')} className="add-table-btn">Update Table</button>
-//           <button onClick={() => console.log('Delete Table clicked')} className="add-table-btn">Delete Table</button>
-//         </div>
-//       </div>
-//       <div className="table-list">
-//         {tables.map((table, index) => (
-//           <div key={index} className="table-box">
-//             <img src={table.imageUrl} alt={table.name} className="table-image" />
-//             <div className="table-details">
-//               <div className="table-name">{table.name}</div>
-//               <div className="table-price">Price: ${table.price}</div>
-//               <button className="view-details-btn">View Details</button>
-//               <button className="book-now-btn">Book Now</button>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Table;
-
-
-
-
-import React, { useState, useEffect } from 'react';
-
-import axios from 'axios';
-import './Table.css'; // Import CSS file for styling
+import React, { useState } from 'react';
+import './Table.css';
 
 const Table = () => {
-  const [tables, setTables] = useState([]);
-  const [newTable, setNewTable] = useState({
-    name: '',
-    price: '',
-    imageUrl: ''
-  });
+  const [name, setName] = useState('');
+  const [guestNumber, setGuestNumber] = useState('');
+  const [status, setStatus] = useState('pending');
+  const [location, setLocation] = useState('outside');
+  const [date, setDate] = useState(new Date().toLocaleDateString());
+  const [time, setTime] = useState(new Date().toLocaleTimeString());
+  const [tableData, setTableData] = useState([]);
+  const [editIndex, setEditIndex] = useState(null);
 
-  const fetchTables = async () => {
-    try {
-      const response = await axios.get('http://localhost:3002/tables');
-      setTables(response.data);
-    } catch (error) {
-      console.error('Error fetching tables:', error);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newData = { 
+      name, 
+      guestNumber, 
+      status, 
+      location, 
+      date,
+      time
+    };
+    if (editIndex !== null) {
+      const updatedData = tableData.map((item, index) => (index === editIndex ? newData : item));
+      setTableData(updatedData);
+      setEditIndex(null);
+    } else {
+      setTableData([...tableData, newData]);
     }
+    setName('');
+    setGuestNumber('');
+    setStatus('pending');
+    setLocation('outside');
+    setDate(new Date().toLocaleDateString());
+    setTime(new Date().toLocaleTimeString());
   };
 
-  useEffect(() => {
-    fetchTables();
-  }, []); // Fetch tables on component mount
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewTable({ ...newTable, [name]: value });
+  const handleEdit = (index) => {
+    const data = tableData[index];
+    setName(data.name);
+    setGuestNumber(data.guestNumber);
+    setStatus(data.status);
+    setLocation(data.location);
+    setDate(data.date);
+    setTime(data.time);
+    setEditIndex(index);
   };
 
-  const handleAddTable = () => {
-    setTables([...tables, newTable]);
-    setNewTable({ name: '', price: '', imageUrl: '' }); // Clear input fields after adding the table
-    console.log('New Table Added:', newTable);
-    // Here you can send an HTTP request to your backend server to save the new table data in your database
+  const handleDelete = (index) => {
+    const updatedData = tableData.filter((_, i) => i !== index);
+    setTableData(updatedData);
   };
 
   return (
-    <div>
-      <div className="table-header">
-        <h2>Table For Reservation</h2>
-        <div>
-          <input
-            type="text"
-            placeholder="Table Name"
-            name="name"
-            value={newTable.name}
-            onChange={handleInputChange}
-          />
-          <input
-            type="number"
-            placeholder="Price"
-            name="price"
-            value={newTable.price}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            placeholder="Image URL"
-            name="imageUrl"
-            value={newTable.imageUrl}
-            onChange={handleInputChange}
-          />
-          <button onClick={handleAddTable} className="add-table-btn">Add Table</button>
-        </div>
-      </div>
-      {tables.length > 0 && (
-        <div className="table-list">
-          {tables.map((table, index) => (
-            <div key={index} className="table-box">
-              <img src={table.imageUrl} alt={table.name} className="table-image" />
-              <div className="table-details">
-                <div className="table-name">{table.name}</div>
-                <div className="table-price">Price: ${table.price}</div>
-                <button className="view-details-btn">View Details</button>
-                <button className="book-now-btn">Book Now</button>
-              </div>
-            </div>
+    <div className="container">
+      <form onSubmit={handleSubmit} className="form">
+        <label className="form-label">
+          Name:
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="form-input" />
+        </label>
+        <br />
+        <label className="form-label">
+          Guest Number:
+          <input type="number" value={guestNumber} onChange={(e) => setGuestNumber(e.target.value)} className="form-input" />
+        </label>
+        <br />
+        <label className="form-label">
+          Status:
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className="form-select">
+            <option value="pending">Pending</option>
+            <option value="booked">Booked</option>
+            <option value="unassigned">Unassigned</option>
+          </select>
+        </label>
+        <br />
+        <label className="form-label">
+          Location:
+          <select value={location} onChange={(e) => setLocation(e.target.value)} className="form-select">
+            <option value="outside">Outside</option>
+            <option value="inside">Inside</option>
+          </select>
+        </label>
+        <br />
+        <label className="form-label">
+          Date:
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="form-input" />
+        </label>
+        <br />
+        <label className="form-label">
+          Time:
+          <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="form-input" />
+        </label>
+        <br />
+        <button type="submit" className="form-button">{editIndex !== null ? 'Update' : 'Submit'}</button>
+      </form>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Guest Number</th>
+            <th>Status</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tableData.map((data, index) => (
+            <tr key={index}>
+              <td>{data.name}</td>
+              <td>{data.guestNumber}</td>
+              <td>{data.status}</td>
+              <td>{data.location}</td>
+              <td>{data.date}</td>
+              <td>{data.time}</td>
+              <td>
+                <button onClick={() => handleEdit(index)} className="edit-button">Edit</button>
+                <button onClick={() => handleDelete(index)} className="delete-button">Delete</button>
+              </td>
+            </tr>
           ))}
-        </div>
-      )}
+        </tbody>
+      </table>
     </div>
   );
 };
