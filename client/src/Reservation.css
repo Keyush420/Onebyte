@@ -1,0 +1,58 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('path_to_your_image.jpg'); /* Add your image path here */
+    background-color: #007bff;
+    background-size: cover;
+    background-position: center;
+  }
+  .container-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .container {
+    max-width: 405px;
+    margin: 135px auto; /* Centering the container */
+    padding: 60px;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    background-color: #f0f0f0; /* Add a background color */
+    color: #333; /* Change text color */
+  }
+  
+  .note-label {
+    display: block;
+    margin-bottom: 10px; /* Increased margin */
+    font-size: 16px; /* Increased font size */
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  .note-input {
+    width: 98%;
+    height: 20%;
+    padding: 10px;
+     /* Increased padding */
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }

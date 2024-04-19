@@ -92,6 +92,11 @@ const Table = () => {
           <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="form-input" />
         </label>
         <br />
+        <label className="form-label">
+          Note:
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="form-input" />
+        </label>
+        <br/>
         <button type="submit" className="form-button">{editIndex !== null ? 'Update' : 'Submit'}</button>
       </form>
       <table className="table">

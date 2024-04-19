@@ -73,24 +73,55 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Create a route to add reservations
-app.post('/api/reservations', (req, res) => {
-    const { name, guestNumber, status, location } = req.body;
+// Endpoint to add a menu item
+app.post('/menu', (req, res) => {
+    const { name, price, image } = req.body;
 
-    if (!name || !guestNumber || !status || !location) {
-        return res.status(400).json({ error: 'Missing required fields' });
+    if (!name || !price || !image) {
+        return res.status(400).json({ error: 'Name, price, and image are required' });
     }
 
-    const SQL = 'INSERT INTO reservations (name, guest_number, status, location) VALUES (?, ?, ?, ?)';
-    const values = [name, guestNumber, status, location];
+    const SQL = 'INSERT INTO menu_items (name, price, image) VALUES (?, ?, ?)';
+    const values = [name, price, image];
 
     db.query(SQL, values, (err, results) => {
         if (err) {
-            console.error('Error inserting reservation:', err);
+            console.error('Error inserting menu item:', err);
             res.status(500).json({ error: 'Internal Server Error' });
             return;
         }
-        console.log('Reservation added successfully!');
-        res.status(201).json({ message: 'Reservation added!' });
+        console.log('Menu item inserted successfully!');
+        res.status(201).json({ message: 'Menu item added!' });
+    });
+});
+
+// Endpoint to fetch all menu items
+app.get('/menu', (req, res) => {
+    const SQL = 'SELECT * FROM menu_items';
+
+    db.query(SQL, (err, results) => {
+        if (err) {
+            console.error('Error fetching menu items:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        res.status(200).json(results);
+    });
+});
+
+// Endpoint to delete a menu item
+app.delete('/menu/:id', (req, res) => {
+    const id = req.params.id;
+
+    const SQL = 'DELETE FROM menu_items WHERE id = ?';
+
+    db.query(SQL, [id], (err, results) => {
+        if (err) {
+            console.error('Error deleting menu item:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        console.log('Menu item deleted successfully!');
+        res.status(200).json({ message: 'Menu item deleted!' });
     });
 });

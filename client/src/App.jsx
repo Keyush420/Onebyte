@@ -5,6 +5,8 @@ import Register from './Register';
 import Dashboard from './Dashboard';
 import Table from './Table';
 import Menu from './Menu';
+import Reservation from './Reservation';
+import ReservationPage from './ReservationPage';
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/table" element={<Table />} />
+        <Route path="/Reservation" element={<Reservation />} />
+        <Route path="/ReservationPage" element={<ReservationPage />} />
         <Route path="/menu" element={<Menu />} />
         {/* Add other routes here */}
       </Routes>
