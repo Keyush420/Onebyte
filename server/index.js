@@ -49,6 +49,36 @@ app.post('/register', (req, res) => {
     });
 });
 
+// Endpoint to check if a user with the given email or username already exists
+app.get('/checkUser', (req, res) => {
+    const { email, username } = req.query;
+
+    // Check if email or username exists in the database
+    const SQL = 'SELECT * FROM users WHERE email = ? OR username = ?';
+    const values = [email, username];
+
+    db.query(SQL, values, (err, results) => {
+        if (err) {
+            console.error('Error checking user:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        if (results.length > 0) {
+            // User with the given email or username already exists
+            let existsEmail = false;
+            let existsUsername = false;
+            results.forEach(user => {
+                if (user.email === email) existsEmail = true;
+                if (user.username === username) existsUsername = true;
+            });
+            res.status(200).json({ exists: true, existsEmail, existsUsername });
+        } else {
+            // User does not exist
+            res.status(200).json({ exists: false });
+        }
+    });
+});
+
 
 app.post('/login', (req, res) => {
     // Get variables sent from the form

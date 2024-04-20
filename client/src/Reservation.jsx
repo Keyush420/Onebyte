@@ -59,7 +59,7 @@ const Reservation = () => {
 
     return (
         <div className="container-wrapper">
-            <div className="container">
+            <div className="containerreservation">
                 <label>Name:</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
 

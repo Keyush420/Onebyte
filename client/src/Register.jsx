@@ -1,78 +1,88 @@
 import React, { useState } from 'react';
-// import './Register.css';
 import './App.css';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 
-// Import our assets
 import video from './LoginAssets/video.mp4';
 import logo from './LoginAssets/logo.jpg';
 
-// Imported Icons
 import { MdMarkEmailRead } from 'react-icons/md';
 import { FaUserShield } from 'react-icons/fa';
 import { BsFillShieldLockFill } from 'react-icons/bs';
 import { AiOutlineSwapRight } from 'react-icons/ai';
 
 const Register = () => {
-  // useState to hold our inputs
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // Function to handle form submission
+  const [emailError, setEmailError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
   const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    createUser(email, username, password); // Call createUser function
+    event.preventDefault();
+
+    if (!email) {
+      setEmailError('Please fill in the email field');
+      return;
+    }
+
+    if (!username) {
+      setUsernameError('Please fill in the username field');
+      return;
+    }
+
+    if (!password) {
+      setPasswordError('Please fill in the password field');
+      return;
+    }
+
+    createUser(email, username, password);
   };
 
-// Function to create user with validation
-const createUser = () => {
-  // Check if email, username, and password are not empty
-  if (!email || !username || !password) {
-    console.error('Please fill in all fields');
-    return;
-  }
+  const createUser = () => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+    if (!passwordRegex.test(password)) {
+        setPasswordError('Password must have at least 8 characters with at least one uppercase letter and one unique symbol');
+        return;
+    }
 
-  // Check if password meets criteria (8 characters with uppercase and unique symbol)
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
-  if (!passwordRegex.test(password)) {
-    console.error('Password must have at least 8 characters with at least one uppercase letter and one unique symbol');
-    return;
-  }
-
-  // Send GET request to server to check if email or username already exists
-  Axios.get(`http://localhost:3002/checkUser?email=${email}&username=${username}`)
-    .then((response) => {
-      // If email or username already exists, show error message
-      if (response.data.exists) {
-        console.error('Email or username already exists');
-      } else {
-        // If email and username are unique, proceed to create user
-        Axios.post('http://localhost:3002/register', {
-          email: email,
-          username: username,
-          password: password,
+    Axios.get(`http://localhost:3002/checkUser?email=${email}&username=${username}`)
+        .then((response) => {
+            if (response.data.exists) {
+                // User already exists with the given email or username
+                if (response.data.existsEmail) {
+                    setEmailError('User already exists with this email');
+                }
+                if (response.data.existsUsername) {
+                    setUsernameError('User already exists with this username');
+                }
+            } else {
+                // User does not exist, proceed to register
+                Axios.post('http://localhost:3002/register', {
+                    email: email,
+                    username: username,
+                    password: password,
+                })
+                    .then((response) => {
+                        console.log('User has been created');
+                        console.log(response.data);
+                    })
+                    .catch((error) => {
+                        console.error('Error creating user:', error);
+                    });
+            }
         })
-          .then((response) => {
-            console.log('User has been created');
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.error('Error creating user:', error);
-          });
-      }
-    })
-    .catch((error) => {
-      console.error('Error checking user:', error);
-    });
+        .catch((error) => {
+            console.error('Error checking user:', error);
+        });
 };
 
 
   return (
     <div className='registerPage flex'>
       <div className='container flex'>
-
         <div className='videoDiv'>
           <video src={video} autoPlay muted loop></video>
 
@@ -95,15 +105,14 @@ const createUser = () => {
             <h3>Let Us Know You!</h3>
           </div>
 
-          <form onSubmit={handleSubmit}className='form grid'>
-          {/* <span className='showMessage'>Register Status will go here</span> */}
-
+          <form onSubmit={handleSubmit} className='form grid'>
             <div className="inputDiv">
               <label htmlFor="email">Email</label>
               <div className='input flex'>
                 <MdMarkEmailRead className='icon'/>
                 <input type="email" id='email' placeholder='Enter Email' value={email} onChange={(e) => setEmail(e.target.value)}/>
               </div>
+              <span className="error">{emailError}</span>
             </div>
             
             <div className="inputDiv">
@@ -112,6 +121,7 @@ const createUser = () => {
                 <FaUserShield className='icon'/>
                 <input type="text" id='username' placeholder='Enter Username' value={username} onChange={(e) => setUsername(e.target.value)}/>
               </div>
+              <span className="error">{usernameError}</span>
             </div>
 
             <div className="inputDiv">
@@ -120,19 +130,15 @@ const createUser = () => {
                 <BsFillShieldLockFill className='icon'/>
                 <input type="password" id='password' placeholder='Enter Password' value={password} onChange={(e) => setPassword(e.target.value)}/>
               </div>
+              <span className="error">{passwordError}</span>
             </div>
 
             <button type='submit' className='btn flex'>
               <span>Register</span>
               <AiOutlineSwapRight className='icon'/>
             </button> 
-
-            {/* <span className='forgotPassword'>
-              Forgot Your Password? <a href="">Click Here</a>
-            </span>   */}
           </form>
         </div>
-
       </div>    
     </div>
   );

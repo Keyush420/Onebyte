@@ -1,10 +1,9 @@
-/* Your existing CSS styles */
 .container-wrapper {
   display: flex;
   justify-content: center;
 }
 
-.container {
+.containerreservation {
   max-width: 405px;
   margin: 135px auto;
   padding: 60px;
@@ -48,4 +47,38 @@ button:hover {
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+
+
+.reservations-page {
+  margin: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #007bff;
+  color: white;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
 }
