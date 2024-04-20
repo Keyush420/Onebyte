@@ -64,23 +64,6 @@ img, video{
     display: none;
 }
 
-/* .showMessage{
-    display: block;
-    color: var(--blackColor);
-    padding: 10px;
-    background: var(--whiteColor);
-    border-radius: 3px;
-    text-align: center;
-}
-
-.showMessage{
-    display: block;
-    color: var(--blackColor);
-    background: var(--whiteColor);
-    border-radius: 3px;
-    text-align: center;
-} */
-
 .btn{
     border: none;
     outline: none;

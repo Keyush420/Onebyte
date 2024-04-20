@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './Reservation.css'; // Import your CSS file
 
 const ReservationsPage = () => {
   const [reservations, setReservations] = useState([]);
@@ -21,21 +22,35 @@ const ReservationsPage = () => {
   return (
     <div className="reservations-page">
       <h1>Reservations</h1>
-      <ul>
-        {reservations.map((reservation, index) => (
-          <li key={index}>
-            <p>Name: {reservation.name}</p>
-            <p>Guests: {reservation.guests}</p>
-            <p>Status: {reservation.status}</p>
-            <p>Location: {reservation.location}</p>
-            <p>Date: {reservation.date}</p>
-            <p>Time: {reservation.time}</p>
-            <p>Note: {reservation.note}</p>
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Guests</th>
+            <th>Status</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          {reservations.map((reservation, index) => (
+            <tr key={index}>
+              <td>{reservation.name}</td>
+              <td>{reservation.guests}</td>
+              <td>{reservation.status}</td>
+              <td>{reservation.location}</td>
+              <td>{reservation.date}</td>
+              <td>{reservation.time}</td>
+              <td>{reservation.note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
 export default ReservationsPage;
+

@@ -15,8 +15,7 @@ import { BsFillShieldLockFill } from 'react-icons/bs';
 import { AiOutlineSwapRight } from 'react-icons/ai';
 
 const Register = () => {
-
-    // useState to hold our inputs
+  // useState to hold our inputs
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -27,22 +26,47 @@ const Register = () => {
     createUser(email, username, password); // Call createUser function
   };
 
-  // Function to create user
-  const createUser = () => {
-    // Send POST request to server
-    Axios.post('http://localhost:3002/register', {
-      email: email,
-      username: username,
-      password: password, // Corrected typo here
+// Function to create user with validation
+const createUser = () => {
+  // Check if email, username, and password are not empty
+  if (!email || !username || !password) {
+    console.error('Please fill in all fields');
+    return;
+  }
+
+  // Check if password meets criteria (8 characters with uppercase and unique symbol)
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+  if (!passwordRegex.test(password)) {
+    console.error('Password must have at least 8 characters with at least one uppercase letter and one unique symbol');
+    return;
+  }
+
+  // Send GET request to server to check if email or username already exists
+  Axios.get(`http://localhost:3002/checkUser?email=${email}&username=${username}`)
+    .then((response) => {
+      // If email or username already exists, show error message
+      if (response.data.exists) {
+        console.error('Email or username already exists');
+      } else {
+        // If email and username are unique, proceed to create user
+        Axios.post('http://localhost:3002/register', {
+          email: email,
+          username: username,
+          password: password,
+        })
+          .then((response) => {
+            console.log('User has been created');
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error('Error creating user:', error);
+          });
+      }
     })
-      .then((response) => {
-        console.log('User has been created');
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error('Error creating user:', error);
-      });
-  };  
+    .catch((error) => {
+      console.error('Error checking user:', error);
+    });
+};
 
 
   return (
@@ -111,7 +135,7 @@ const Register = () => {
 
       </div>    
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

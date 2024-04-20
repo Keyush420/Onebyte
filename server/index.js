@@ -73,16 +73,44 @@ app.post('/login', (req, res) => {
     });
 });
 
+// Endpoint to insert reservation data
+app.post('/reserve', (req, res) => {
+    const { name, guests, status, location, date, time, note } = req.body;
+  
+    const query = 'INSERT INTO reservations (name, guests, status, location, date, time, note) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.query(query, [name, guests, status, location, date, time, note], (err, result) => {
+      if (err) {
+        console.error('Error inserting data:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      console.log('Data inserted successfully:', result);
+      res.status(200).json({ message: 'Reservation successful' });
+    });
+  });
+  
+  // Endpoint to get reservation data
+  app.get('/reservations', (req, res) => {
+    const query = 'SELECT * FROM reservations';
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error('Error fetching data:', err);
+        res.status(500).json({ error: 'Database error' });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  });  
+
 // Endpoint to add a menu item
 app.post('/menu', (req, res) => {
-    const { name, price, image } = req.body;
+    const { name, price, imageUrl } = req.body;
 
-    if (!name || !price || !image) {
-        return res.status(400).json({ error: 'Name, price, and image are required' });
+    if (!name || !price || !imageUrl) {
+        return res.status(400).json({ error: 'Name, price, and imageUrl are required' });
     }
 
-    const SQL = 'INSERT INTO menu_items (name, price, image) VALUES (?, ?, ?)';
-    const values = [name, price, image];
+    const SQL = 'INSERT INTO menu_items (name, price, image_url) VALUES (?, ?, ?)';
+    const values = [name, price, imageUrl]; // Define values here
 
     db.query(SQL, values, (err, results) => {
         if (err) {
@@ -91,12 +119,13 @@ app.post('/menu', (req, res) => {
             return;
         }
         console.log('Menu item inserted successfully!');
-        res.status(201).json({ message: 'Menu item added!' });
+        res.status(201).json({ message: 'Menu item added!', id: results.insertId });
     });
 });
 
+
 // Endpoint to fetch all menu items
-app.get('/menu', (req, res) => {
+app.get('/menu_items', (req, res) => {
     const SQL = 'SELECT * FROM menu_items';
 
     db.query(SQL, (err, results) => {
@@ -105,17 +134,22 @@ app.get('/menu', (req, res) => {
             res.status(500).json({ error: 'Internal Server Error' });
             return;
         }
-        res.status(200).json(results);
+        const menuItems = results.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            imageUrl: item.image_url // Consistent with column name
+        }));
+        res.status(200).json(menuItems);
     });
 });
 
 // Endpoint to delete a menu item
-app.delete('/menu/:id', (req, res) => {
+app.delete('/menu_items/:id', (req, res) => {
     const id = req.params.id;
-
     const SQL = 'DELETE FROM menu_items WHERE id = ?';
 
-    db.query(SQL, [id], (err, results) => {
+    db.query(SQL, id, (err, results) => {
         if (err) {
             console.error('Error deleting menu item:', err);
             res.status(500).json({ error: 'Internal Server Error' });

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import { Link, useNavigate } from 'react-router-dom';
-import Axios from "axios"
+import Axios from 'axios';
 
 // Import our assets
 import video from './LoginAssets/video.mp4';
@@ -21,7 +21,15 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent default form submission behavior
-    loginUser(); // Call loginUser function
+
+    // Check if username or password is empty
+    if (!username || !password) {
+      console.error('Please enter both username and password');
+      return;
+    }
+
+    // Call loginUser function if validation passes
+    loginUser();
   };
 
   // Function to login user
@@ -35,9 +43,9 @@ const Login = () => {
         console.log(response);
 
         if (response.data.message) {
-          navigate('/') // Redirect to '/' if login fails
+          navigate('/'); // Redirect to '/' if login fails
         } else {
-          navigate('/dashboard') // Redirect to '/dashboard' if login succeeds
+          navigate('/dashboard'); // Redirect to '/dashboard' if login succeeds
         }
       })
       .catch((error) => {
@@ -106,4 +114,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Login;
