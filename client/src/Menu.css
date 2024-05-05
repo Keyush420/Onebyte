@@ -1,60 +1,73 @@
 .menu-container {
-  max-width: 600px;
-  margin: 0 auto;
+  padding: 20px;
 }
 
-.menu-form {
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 
-.form-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.form-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+.menu-item {
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 220px; /* Reduced width for each menu item */
+  display: inline-block;
+  vertical-align: top;
+  box-sizing: border-box;
+  margin-right: 20px; /* Add margin to create space between items */
 }
 
-.form-button {
-  padding: 10px 20px;
+.menu-item:last-child {
+  margin-right: 0; /* Remove margin from the last item to prevent extra space */
+}
+
+.menu-item img {
+  width: 100%;
+  height: 200px; /* Fixed height for the image */
+  object-fit: cover; /* Maintain aspect ratio and cover the container */
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.item-details {
+  padding: 10px 0;
+}
+
+.item-details h3 {
+  margin: 0;
+}
+
+.item-details p {
+  margin: 5px 0;
+}
+
+.item-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-menu-item input {
+  margin-right: 10px;
+}
+
+.add-menu-item button {
   background-color: #007bff;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  padding: 5px 10px;
   cursor: pointer;
 }
 
-.preview-image {
-  max-width: 200px;
-  margin-top: 10px;
+.update-menu-btn {
+  background-color: #28a745;
 }
 
-.menu-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.menu-table th,
-.menu-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-.delete-button {
-  padding: 6px 10px;
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.menu-item-image {
-  max-width: 100px;
-  height: auto;
+.add-menu-btn:hover,
+.update-menu-btn:hover {
+  opacity: 0.8;
 }

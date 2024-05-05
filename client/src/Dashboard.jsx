@@ -25,7 +25,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import PersonIcon from '@mui/icons-material/Person';
 
 import Menu from './Menu';
-import Reservation from './Reservation'; // Import Reservation component
+import Table from './Table'; // Import Table component
 
 const drawerWidth = 240;
 
@@ -99,7 +99,6 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(false);
   const [showTable, setShowTable] = React.useState(false);
   const [showMenu, setShowMenu] = React.useState(false);
-  const [showReservation, setShowReservation] = React.useState(false); // State to toggle Reservation component visibility
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -110,15 +109,13 @@ export default function Dashboard() {
   };
 
   const handleTableReservationClick = () => {
-    setShowReservation(true); // Set showReservation to true to display Reservation component
     setShowMenu(false);
-    setShowTable(false);
+    setShowTable(true); // Set showTable to true to display Table component
   };
 
   const handleMenuManagementClick = () => {
-    setShowMenu(true);
     setShowTable(false);
-    setShowReservation(false);
+    setShowMenu(true); // Set showMenu to true to display Menu component
   };
 
   return (
@@ -180,15 +177,15 @@ export default function Dashboard() {
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
-              <ListItemText primary={"Menu Mangement"} />
+              <ListItemText primary={"Menu Management"} />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding onClick={handleTableReservationClick}> {/* Handle click event for Table Reservation */}
+          <ListItem disablePadding onClick={handleTableReservationClick}>
             <ListItemButton>
               <ListItemIcon>
                 <TableBarIcon/>
               </ListItemIcon>
-              <ListItemText primary={"Table reservation"} />
+              <ListItemText primary={"Table Reservation"} />
             </ListItemButton>
           </ListItem>
         </List>
@@ -212,7 +209,7 @@ export default function Dashboard() {
               <ListItemIcon>
                 <PersonIcon></PersonIcon>
               </ListItemIcon>
-              <ListItemText primary={"user"} />
+              <ListItemText primary={"User"} />
             </ListItemButton>
           </ListItem>
         </List>
@@ -221,7 +218,7 @@ export default function Dashboard() {
         <DrawerHeader />
         <Typography paragraph>
           {showMenu && <Menu />}
-          {showReservation && <Reservation />} {/* Render Reservation component when showReservation is true */}
+          {showTable && <Table />}
         </Typography>
       </Box>
     </Box>

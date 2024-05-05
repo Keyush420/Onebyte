@@ -1,104 +1,143 @@
-import React, { useState, useEffect } from 'react';
-import './Menu.css';
 import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import './Menu.css'; // Import CSS file
 
 const Menu = () => {
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [image, setImage] = useState('');
+  const [newMenuItem, setNewMenuItem] = useState({
+    name: '',
+    price: '',
+    imageUrl: '',
+  });
+
   const [menuItems, setMenuItems] = useState([]);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updateId, setUpdateId] = useState(null);
 
-  // Function to fetch menu items from the backend
-  const fetchMenuItems = async () => {
-    try {
-      const response = await axios.get('http://localhost:3002/menu_items');
-      setMenuItems(response.data);
-    } catch (error) {
-      console.error('Error fetching menu items:', error);
-    }
-  };
-
-  // Fetch menu items when the component mounts
   useEffect(() => {
     fetchMenuItems();
-  }, []); // Empty dependency array to fetch data only once when the component mounts
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const newItem = { name, price, imageUrl: image };
-
-    try {
-      const response = await axios.post('http://localhost:3002/menu', newItem);
-      console.log(response.data.message);
-      setName('');
-      setPrice('');
-      setImage('');
-      // Fetch menu items again after adding a new item
-      fetchMenuItems();
-    } catch (error) {
-      console.error('Error:', error);
+  const handleAddMenuItem = () => {
+    if (newMenuItem.name && newMenuItem.price && newMenuItem.imageUrl) {
+      axios.post('http://localhost:3002/add_menu_item', newMenuItem)
+        .then(response => {
+          console.log('New Menu Item Added:', response.data);
+          fetchMenuItems();
+          setNewMenuItem({ name: '', price: '', imageUrl: '' });
+        })
+        .catch(error => {
+          console.error('Error adding menu item:', error);
+        });
+    } else {
+      alert('Please fill in all fields');
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3002/menu_items/${id}`);
-      // Fetch menu items again after deleting an item
-      fetchMenuItems();
-    } catch (error) {
-      console.error('Error deleting menu item:', error);
+  const handleDeleteMenuItem = (id) => {
+    axios.delete(`http://localhost:3002/delete_menu_item/${id}`)
+      .then(response => {
+        console.log('Menu Item Deleted:', response.data);
+        fetchMenuItems();
+      })
+      .catch(error => {
+        console.error('Error deleting menu item:', error);
+      });
+  };
+
+  const handleUpdateMenuItem = (id) => {
+    setUpdateId(id);
+    setIsUpdating(true);
+    const menuItemToUpdate = menuItems.find(item => item.id === id);
+    setNewMenuItem({
+      name: menuItemToUpdate.name,
+      price: menuItemToUpdate.price,
+      imageUrl: menuItemToUpdate.imageUrl,
+    });
+  };
+
+  const handleSubmitUpdate = () => {
+    if (newMenuItem.name && newMenuItem.price && newMenuItem.imageUrl) {
+      const updatedMenuItem = {
+        name: newMenuItem.name,
+        price: newMenuItem.price,
+        imageUrl: newMenuItem.imageUrl,
+      };
+
+      axios.put(`http://localhost:3002/update_menu_item/${updateId}`, updatedMenuItem)
+        .then(response => {
+          console.log('Menu Item Updated:', response.data);
+          fetchMenuItems();
+          setIsUpdating(false);
+          setUpdateId(null);
+          setNewMenuItem({ name: '', price: '', imageUrl: '' });
+        })
+        .catch(error => {
+          console.error('Error updating menu item:', error);
+        });
+    } else {
+      alert('Please fill in all fields');
     }
+  };
+
+  const fetchMenuItems = () => {
+    axios.get('http://localhost:3002/menu_items')
+      .then(response => {
+        console.log(response.data); // Log the fetched menu items
+        setMenuItems(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching menu items:', error);
+      });
   };
 
   return (
     <div className="menu-container">
-      <form onSubmit={handleSubmit} className="menu-form">
-        <label className="form-label">
-          Name:
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="form-input" />
-        </label>
-        <br />
-        <label className="form-label">
-          Price:
-          <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} className="form-input" />
-        </label>
-        <br />
-        <label className="form-label">
-          Image URL:
-          <input type="text" value={image} onChange={(e) => setImage(e.target.value)} className="form-input" />
-        </label>
-        {image && <img src={image} alt="Preview" className="preview-image" />}
-        <br />
-        <button type="submit" className="form-button">Add Item</button>
-      </form>
-      <div className="menu-table-container">
-        <table className="menu-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Image</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {menuItems.map((item) => (
-              <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>{item.price}</td>
-                <td>
-                  <img src={item.imageUrl} alt={item.name} className="menu-item-image" />
-                </td>
-                <td>
-                  <button onClick={() => handleDelete(item.id)} className="delete-button">Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="menu-header">
+        <h2>Menu</h2>
+        <div className="add-menu-item">
+          <input
+            type="text"
+            placeholder="Item Name"
+            value={newMenuItem.name}
+            onChange={e => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Price"
+            value={newMenuItem.price}
+            onChange={e => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Image URL"
+            value={newMenuItem.imageUrl}
+            onChange={e => setNewMenuItem({ ...newMenuItem, imageUrl: e.target.value })}
+          />
+          {isUpdating ? (
+            <button onClick={handleSubmitUpdate} className="update-menu-btn">Update</button>
+          ) : (
+            <button onClick={handleAddMenuItem} className="add-menu-btn">Add Item</button>
+          )}
+        </div>
+      </div>
+      <div className="menu-list">
+        {menuItems.map(item => (
+          <div key={item.id} className="menu-item">
+            <img src={item.imageUrl} alt={item.name} />
+            <div className="item-details">
+              <h3>{item.name}</h3>
+              <p>{item.price}</p>
+            </div>
+            <div className="item-actions">
+              <button onClick={() => handleDeleteMenuItem(item.id)}>Delete</button>
+              <button onClick={() => handleUpdateMenuItem(item.id)}>Update</button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
 export default Menu;
+

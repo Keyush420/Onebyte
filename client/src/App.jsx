@@ -4,8 +4,7 @@ import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
 import Menu from './Menu';
-import Reservation from './Reservation';
-import ReservationPage from './ReservationPage';
+import Table from './Table';
 
 function App() {
   return (
@@ -15,10 +14,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/Reservation" element={<Reservation />} />
-        <Route path="/ReservationPage" element={<ReservationPage />} />
+        <Route path="/table" element={<Table />} />
         <Route path="/menu" element={<Menu />} />
-        {/* Add other routes here */}
       </Routes>
     </Router>
   );

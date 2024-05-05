@@ -103,44 +103,88 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Endpoint to insert reservation data
-app.post('/reserve', (req, res) => {
-    const { name, guests, status, location, date, time, note } = req.body;
-  
-    const query = 'INSERT INTO reservations (name, guests, status, location, date, time, note) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    db.query(query, [name, guests, status, location, date, time, note], (err, result) => {
-      if (err) {
-        console.error('Error inserting data:', err);
-        return res.status(500).json({ error: 'Database error' });
-      }
-      console.log('Data inserted successfully:', result);
-      res.status(200).json({ message: 'Reservation successful' });
+// Endpoint to add a table
+app.post('/add_table', (req, res) => {
+    const { name, price, imageUrl, reservationDate, reservationTime } = req.body;
+
+    if (!name || !price || !imageUrl || !reservationDate || !reservationTime) {
+        return res.status(400).json({ error: 'Name, price, imageUrl, reservationDate, and reservationTime are required' });
+    }
+
+    const SQL = 'INSERT INTO tables (name, price, imageUrl, reservationDate, reservationTime) VALUES (?, ?, ?, ?, ?)';
+    const values = [name, price, imageUrl, reservationDate, reservationTime];
+
+    db.query(SQL, values, (err, results) => {
+        if (err) {
+            console.error('Error inserting table:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        console.log('Table inserted successfully!');
+        res.status(201).json({ message: 'Table added!', id: results.insertId });
     });
-  });
-  
-  // Endpoint to get reservation data
-  app.get('/reservations', (req, res) => {
-    const query = 'SELECT * FROM reservations';
-    db.query(query, (err, results) => {
-      if (err) {
-        console.error('Error fetching data:', err);
-        res.status(500).json({ error: 'Database error' });
-      } else {
+});
+
+
+// Endpoint to fetch all tables
+app.get('/tables', (req, res) => {
+    const SQL = 'SELECT * FROM tables';
+
+    db.query(SQL, (err, results) => {
+        if (err) {
+            console.error('Error fetching tables:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
         res.status(200).json(results);
-      }
     });
-  });  
+});
+
+// Endpoint to update a table
+app.put('/update_table/:id', (req, res) => {
+    const id = req.params.id;
+    const { name, price, imageUrl,reservationDate, reservationTime } = req.body;
+
+    const SQL = 'UPDATE tables SET name = ?, price = ?, imageUrl = ?,reservationDate = ?, reservationTime = ? WHERE id = ?';
+    const values = [name, price, imageUrl,reservationDate, reservationTime, id];
+
+    db.query(SQL, values, (err, results) => {
+        if (err) {
+            console.error('Error updating table:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        console.log('Table updated successfully!');
+        res.status(200).json({ message: 'Table updated!' });
+    });
+});
+
+// Endpoint to delete a table
+app.delete('/delete_table/:id', (req, res) => {
+    const id = req.params.id;
+    const SQL = 'DELETE FROM tables WHERE id = ?';
+
+    db.query(SQL, id, (err, results) => {
+        if (err) {
+            console.error('Error deleting table:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        console.log('Table deleted successfully!');
+        res.status(200).json({ message: 'Table deleted!' });
+    });
+});
 
 // Endpoint to add a menu item
-app.post('/menu', (req, res) => {
+app.post('/add_menu_item', (req, res) => {
     const { name, price, imageUrl } = req.body;
 
     if (!name || !price || !imageUrl) {
         return res.status(400).json({ error: 'Name, price, and imageUrl are required' });
     }
 
-    const SQL = 'INSERT INTO menu_items (name, price, image_url) VALUES (?, ?, ?)';
-    const values = [name, price, imageUrl]; // Define values here
+    const SQL = 'INSERT INTO menu_items (name, price, imageUrl) VALUES (?, ?, ?)';
+    const values = [name, price, imageUrl];
 
     db.query(SQL, values, (err, results) => {
         if (err) {
@@ -153,7 +197,6 @@ app.post('/menu', (req, res) => {
     });
 });
 
-
 // Endpoint to fetch all menu items
 app.get('/menu_items', (req, res) => {
     const SQL = 'SELECT * FROM menu_items';
@@ -164,18 +207,31 @@ app.get('/menu_items', (req, res) => {
             res.status(500).json({ error: 'Internal Server Error' });
             return;
         }
-        const menuItems = results.map(item => ({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            imageUrl: item.image_url // Consistent with column name
-        }));
-        res.status(200).json(menuItems);
+        res.status(200).json(results);
+    });
+});
+
+// Endpoint to update a menu item
+app.put('/update_menu_item/:id', (req, res) => {
+    const id = req.params.id;
+    const { name, price, imageUrl } = req.body;
+
+    const SQL = 'UPDATE menu_items SET name = ?, price = ?, imageUrl = ? WHERE id = ?';
+    const values = [name, price, imageUrl, id];
+
+    db.query(SQL, values, (err, results) => {
+        if (err) {
+            console.error('Error updating menu item:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        console.log('Menu item updated successfully!');
+        res.status(200).json({ message: 'Menu item updated!' });
     });
 });
 
 // Endpoint to delete a menu item
-app.delete('/menu_items/:id', (req, res) => {
+app.delete('/delete_menu_item/:id', (req, res) => {
     const id = req.params.id;
     const SQL = 'DELETE FROM menu_items WHERE id = ?';
 
