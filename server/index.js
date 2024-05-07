@@ -16,7 +16,7 @@ const db = mysql.createConnection({
     user: 'root',
     host: 'localhost',
     password: '', // Provide your MySQL password here if any
-    database: 'plantdb'
+    database: 'onebyte'
 });
 
 // Check MySQL connection
@@ -243,5 +243,137 @@ app.delete('/delete_menu_item/:id', (req, res) => {
         }
         console.log('Menu item deleted successfully!');
         res.status(200).json({ message: 'Menu item deleted!' });
+    });
+});
+
+
+// Fetch user reservations from database
+app.get('/userReservations', (req, res) => {
+    const SQL = 'SELECT * FROM userreservations';
+  
+    db.query(SQL, (error, results) => {
+      if (error) {
+        console.error('Error fetching user reservations:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+      res.json(results);
+    });
+});
+
+// Endpoint to accept a reservation
+app.put('/acceptReservation/:id', (req, res) => {
+    const id = req.params.id;
+    const SQL = 'UPDATE userreservations SET status = "accepted" WHERE id = ?';
+
+    db.query(SQL, [id], (err, result) => {
+        if (err) {
+            console.error('Error accepting reservation:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        console.log('Reservation accepted successfully!');
+
+        // Insert record into the report table
+        const reportSQL = 'INSERT INTO report (reservation_id, action) VALUES (?, ?)';
+        const values = [id, 'accept'];
+        db.query(reportSQL, values, (reportErr, reportResult) => {
+            if (reportErr) {
+                console.error('Error adding report:', reportErr);
+                res.status(500).json({ error: 'Internal Server Error' });
+                return;
+            }
+            console.log('Report added for reservation acceptance!');
+            res.status(200).json({ message: 'Reservation accepted!' });
+        });
+    });
+});
+
+// Endpoint to reject a reservation
+app.put('/rejectReservation/:id', (req, res) => {
+    const id = req.params.id;
+    const SQL = 'UPDATE userreservations SET status = "rejected" WHERE id = ?';
+
+    db.query(SQL, [id], (err, result) => {
+        if (err) {
+            console.error('Error rejecting reservation:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        console.log('Reservation rejected successfully!');
+
+        // Insert record into the report table
+        const reportSQL = 'INSERT INTO report (reservation_id, action) VALUES (?, ?)';
+        const values = [id, 'reject'];
+        db.query(reportSQL, values, (reportErr, reportResult) => {
+            if (reportErr) {
+                console.error('Error adding report:', reportErr);
+                res.status(500).json({ error: 'Internal Server Error' });
+                return;
+            }
+            console.log('Report added for reservation rejection!');
+            res.status(200).json({ message: 'Reservation rejected!' });
+        });
+    });
+});
+
+
+// Endpoint to fetch reports
+app.get('/reports', (req, res) => {
+    const SQL = 'SELECT * FROM report';
+
+    db.query(SQL, (err, results) => {
+        if (err) {
+            console.error('Error fetching reports:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        res.status(200).json(results);
+    });
+});
+
+
+app.get('/bookings/summary', (req, res) => {
+    const SQLTotal = 'SELECT COUNT(*) AS total FROM userreservations';
+    const SQLRejected = 'SELECT COUNT(*) AS rejected FROM userreservations WHERE status = "rejected"';
+    const SQLAccepted = 'SELECT COUNT(*) AS accepted FROM userreservations WHERE status = "accepted"';
+    const SQLNew = 'SELECT COUNT(*) AS new FROM userreservations WHERE status = "pending"';
+
+    let total = 0;
+    let rejected = 0;
+    let accepted = 0;
+    let newBookings = 0;
+
+    db.query(SQLTotal, (err, results) => {
+        if (err) {
+            console.error('Error fetching total bookings:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        total = results[0].total;
+
+        db.query(SQLRejected, (err, results) => {
+            if (err) {
+                console.error('Error fetching rejected bookings:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+            rejected = results[0].rejected;
+
+            db.query(SQLAccepted, (err, results) => {
+                if (err) {
+                    console.error('Error fetching accepted bookings:', err);
+                    return res.status(500).json({ error: 'Internal Server Error' });
+                }
+                accepted = results[0].accepted;
+
+                db.query(SQLNew, (err, results) => {
+                    if (err) {
+                        console.error('Error fetching new bookings:', err);
+                        return res.status(500).json({ error: 'Internal Server Error' });
+                    }
+                    newBookings = results[0].new;
+
+                    res.status(200).json({ total, rejected, accepted, new: newBookings });
+                });
+            });
+        });
     });
 });
