@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import '../adminApp.css';
+import './adminApp.css';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 
-import video from '../LoginAssets/video.mp4';
-import logo from '../LoginAssets/logo.jpg';
+import video from './LoginAssets/video.mp4';
+import logo from './LoginAssets/logo.jpg';
 
 import { MdMarkEmailRead } from 'react-icons/md';
 import { FaUserShield } from 'react-icons/fa';
 import { BsFillShieldLockFill } from 'react-icons/bs';
 import { AiOutlineSwapRight } from 'react-icons/ai';
 
-const Register = () => {
+const adminRegister = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -93,7 +93,7 @@ const Register = () => {
 
           <div className='footerDiv flex'>
             <span className='text'>Already have an account?</span>
-            <Link to={'/adminLogin'}>
+            <Link to={'/login'}>
               <button className='btn'>Login</button>
             </Link>
           </div>
@@ -114,7 +114,7 @@ const Register = () => {
               </div>
               <span className="error">{emailError}</span>
             </div>
-            
+
             <div className="inputDiv">
               <label htmlFor="username">Username</label>
               <div className='input flex'>
@@ -144,4 +144,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default adminRegister;

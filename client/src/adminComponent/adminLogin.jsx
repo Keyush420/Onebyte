@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import '../adminApp.css';
+import './adminApp.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 
 // Import our assets
-import video from '../LoginAssets/video.mp4';
-import logo from '../LoginAssets/logo.jpg';
+import video from './LoginAssets/video.mp4';
+import logo from './LoginAssets/logo.jpg';
 
 // Imported Icons
 import { FaUserShield } from 'react-icons/fa';
 import { BsFillShieldLockFill } from 'react-icons/bs';
 import { AiOutlineSwapRight } from 'react-icons/ai';
 
-const Login = () => {
+const AdminLogin = () => {
   const navigate = useNavigate(); // Use useNavigate hook
 
   // useState Hook to store inputs
@@ -35,7 +35,7 @@ const Login = () => {
   // Function to login user
   const loginUser = () => {
     // Send POST request to server
-    Axios.post('http://localhost:3002/adminLogin', {
+    Axios.post('http://localhost:3002/login', {
       username: username,
       password: password,
     })
@@ -45,7 +45,7 @@ const Login = () => {
         if (response.data.message) {
           navigate('/'); // Redirect to '/' if login fails
         } else {
-          navigate('/adminDashboard'); // Redirect to '/dashboard' if login succeeds
+          navigate('/dashboard'); // Redirect to '/dashboard' if login succeeds
         }
       })
       .catch((error) => {
@@ -67,7 +67,7 @@ const Login = () => {
 
           <div className='footerDiv flex'>
             <span className='text'>Don't have an account?</span>
-            <Link to={'/adminRegister'}>
+            <Link to={'/register'}>
               <button className='btn'>Sign Up</button>
             </Link>
           </div>
@@ -114,4 +114,4 @@ const Login = () => {
   )
 }
 
-export default Login;
+export default AdminLogin;
