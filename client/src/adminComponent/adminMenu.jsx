@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import './adminMenu.css'; // Import CSS file
 
-const adminMenu = () => {
+const Menu = () => {
   const [newMenuItem, setNewMenuItem] = useState({
     name: '',
     price: '',
@@ -139,4 +139,5 @@ const adminMenu = () => {
   );
 };
 
-export default adminMenu;
+export default Menu;
+

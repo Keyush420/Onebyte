@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import './adminApp.css';
+import '../adminApp.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 
 // Import our assets
-import video from './LoginAssets/video.mp4';
-import logo from './LoginAssets/logo.jpg';
+import video from '../LoginAssets/video.mp4';
+import logo from '../LoginAssets/logo.jpg';
 
 // Imported Icons
 import { FaUserShield } from 'react-icons/fa';
 import { BsFillShieldLockFill } from 'react-icons/bs';
 import { AiOutlineSwapRight } from 'react-icons/ai';
 
-const AdminLogin = () => {
+const Login = () => {
   const navigate = useNavigate(); // Use useNavigate hook
 
   // useState Hook to store inputs
@@ -35,7 +35,7 @@ const AdminLogin = () => {
   // Function to login user
   const loginUser = () => {
     // Send POST request to server
-    Axios.post('http://localhost:3002/login', {
+    Axios.post('http://localhost:3002/adminLogin', {
       username: username,
       password: password,
     })
@@ -45,7 +45,7 @@ const AdminLogin = () => {
         if (response.data.message) {
           navigate('/'); // Redirect to '/' if login fails
         } else {
-          navigate('/dashboard'); // Redirect to '/dashboard' if login succeeds
+          navigate('/adminDashboard'); // Redirect to '/dashboard' if login succeeds
         }
       })
       .catch((error) => {
@@ -63,13 +63,6 @@ const AdminLogin = () => {
           <div className='textDiv'>
             <h2 className='title'>Create And Sell Extraordinary Products</h2>
             <p>Adopt the peace of nature!</p>
-          </div>
-
-          <div className='footerDiv flex'>
-            <span className='text'>Don't have an account?</span>
-            <Link to={'/register'}>
-              <button className='btn'>Sign Up</button>
-            </Link>
           </div>
         </div>
 
@@ -108,10 +101,12 @@ const AdminLogin = () => {
             </span>
           </form>
         </div>
-
+        <div className="userPart">
+        <a href="/userLogin">Are you user? Login Here</a>
+      </div>
       </div>
     </div>
   )
 }
 
-export default AdminLogin;
+export default Login;

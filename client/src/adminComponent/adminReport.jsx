@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './adminReport.css'; // Import CSS file for styling
 
-function adminReport() {
+function Report() {
   const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -57,4 +57,4 @@ function adminReport() {
   );
 }
 
-export default adminReport;
+export default Report;

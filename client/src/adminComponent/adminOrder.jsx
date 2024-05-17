@@ -1,106 +1,17 @@
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-// import './adminOrder.css'; // Import CSS file for styling
-
-// function adminOrder() {
-//   const [userReservations, setUserReservations] = useState([]);
-//   const [isLoading, setIsLoading] = useState(true);
-
-//   useEffect(() => {
-//     fetchUserReservations();
-//   }, []);
-
-//   const fetchUserReservations = async () => {
-//     try {
-//       const response = await axios.get('http://localhost:3002/userReservations');
-//       setUserReservations(response.data);
-//       setIsLoading(false);
-//     } catch (error) {
-//       console.error('Error fetching user reservations:', error);
-//       setIsLoading(false);
-//     }
-//   };
-
-//   const handleAccept = async (id) => {
-//     try {
-//         // Send a request to update the reservation status
-//         await axios.put(`http://localhost:3002/acceptReservation/${id}`);
-
-//         // Update UI or refetch reservations after accepting
-//         fetchUserReservations();
-//     } catch (error) {
-//         console.error('Error accepting reservation:', error);
-//     }
-// };
-
-// const handleReject = async (id) => {
-//     try {
-//         // Send a request to update the reservation status
-//         await axios.put(`http://localhost:3002/rejectReservation/${id}`);
-
-//         // Update UI or refetch reservations after rejecting
-//         fetchUserReservations();
-//     } catch (error) {
-//         console.error('Error rejecting reservation:', error);
-//     }
-// };  
-  
-//   return (
-//     <div>
-//       <h1>User Reservations</h1>
-//       {isLoading ? (
-//         <p>Loading...</p>
-//       ) : (
-//         <div className="table-container">
-//           <table className="reservation-table">
-//             <thead>
-//               <tr>
-//                 <th>ID</th>
-//                 <th>Number of People</th>
-//                 <th>Reservation Date</th>
-//                 <th>Reservation Time</th>
-//                 <th>Description</th>
-//                 <th>Table Number</th>
-//                 <th>Actions</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {userReservations.map(reservation => (
-//                 <tr key={reservation.id}>
-//                   <td>{reservation.id}</td>
-//                   <td>{reservation.numberOfPeople}</td>
-//                   <td>{reservation.reservationDate}</td>
-//                   <td>{reservation.reservationTime}</td>
-//                   <td>{reservation.description}</td>
-//                   <td>{reservation.tableNumber}</td>
-//                   <td>
-//                     <button onClick={() => handleAccept(reservation.id)}>Accept</button>
-//                     <button onClick={() => handleReject(reservation.id)}>Reject</button>
-//                   </td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default adminOrder;
-
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './adminOrder.css'; // Import CSS file for styling
 
-function adminOrder() {
+function AdminOrder() {
   const [userReservations, setUserReservations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState('');
+  const [counts, setCounts] = useState({ total: 0, accepted: 0, rejected: 0 });
+  const [verification, setVerification] = useState({}); // State to hold verification inputs
 
   useEffect(() => {
     fetchUserReservations();
+    fetchReservationCounts();
   }, []);
 
   const fetchUserReservations = async () => {
@@ -114,39 +25,60 @@ function adminOrder() {
     }
   };
 
-  const handleAccept = async (id) => {
+  const fetchReservationCounts = async () => {
     try {
-      // Send a request to update the reservation status
-      await axios.put(`http://localhost:3002/acceptReservation/${id}`);
-      // Update UI or refetch reservations after accepting
+      const response = await axios.get('http://localhost:3002/reservations/count');
+      setCounts(response.data);
+    } catch (error) {
+      console.error('Error fetching reservation counts:', error);
+    }
+  };
+
+  const handleAccept = async (id, username) => {
+    try {
+      await axios.put(`http://localhost:3002/acceptReservation/${id}`, { username: username });
       fetchUserReservations();
       setMessage('Congratulations! Your booking has been reserved.');
-      
-      // Insert notification message into the notification table
-      await axios.post('http://localhost:3002/notification', { message: 'Congratulations! Your booking has been reserved.' });
+      await axios.post('http://localhost:3002/notification', { username: username, message: 'Congratulations! Your booking has been reserved.' });
     } catch (error) {
       console.error('Error accepting reservation:', error);
     }
   };
-
-  const handleReject = async (id) => {
+  
+  const handleReject = async (id, username) => {
     try {
-      // Send a request to update the reservation status
-      await axios.put(`http://localhost:3002/rejectReservation/${id}`);
-      // Update UI or refetch reservations after rejecting
+      await axios.put(`http://localhost:3002/rejectReservation/${id}`, { username: username });
       fetchUserReservations();
       setMessage('Sorry, your booking has been rejected due to unavailable tables. Please book for another date.');
-
-      // Insert notification message into the notification table
-      await axios.post('http://localhost:3002/notification', { message: 'Sorry, your booking has been rejected due to unavailable tables. Please book for another date.' });
+      await axios.post('http://localhost:3002/notification', { username: username, message: 'Sorry, your booking has been rejected due to unavailable tables. Please book for another date.' });
     } catch (error) {
       console.error('Error rejecting reservation:', error);
     }
-  }; 
+  };
+  
+  // Add this function to handle adding reports
+  const handleAddReport = async (id) => {
+    try {
+      await axios.post(`http://localhost:3002/addReport/${id}`);
+      fetchUserReservations();
+    } catch (error) {
+      console.error('Error adding report:', error);
+    }
+  };
+  
+
+  const handleVerificationChange = (id, value) => {
+    setVerification(prev => ({ ...prev, [id]: value }));
+  };
 
   return (
     <div>
       <h1>User Reservations</h1>
+      <div>
+        <h2>Total Reservations: {counts.total}</h2>
+        <h2>Accepted Reservations: {counts.accepted}</h2>
+        <h2>Rejected Reservations: {counts.rejected}</h2>
+      </div>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
@@ -154,37 +86,49 @@ function adminOrder() {
           <table className="reservation-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>Username</th>
                 <th>Number of People</th>
                 <th>Reservation Date</th>
                 <th>Reservation Time</th>
                 <th>Description</th>
                 <th>Table Number</th>
+                <th>Verify Username</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {userReservations.map(reservation => (
                 <tr key={reservation.id}>
-                  <td>{reservation.id}</td>
+                  <td>{reservation.username}</td>
                   <td>{reservation.numberOfPeople}</td>
                   <td>{reservation.reservationDate}</td>
                   <td>{reservation.reservationTime}</td>
                   <td>{reservation.description}</td>
                   <td>{reservation.tableNumber}</td>
                   <td>
-                    <button onClick={() => handleAccept(reservation.id)}>Accept</button>
-                    <button onClick={() => handleReject(reservation.id)}>Reject</button>
+                    <input
+                      type="text"
+                      value={verification[reservation.id] || ''}
+                      onChange={(e) => handleVerificationChange(reservation.id, e.target.value)}
+                      placeholder="Enter username"
+                    />
                   </td>
+                  <td>
+  <div className="button-container">
+    <button className="button-accept" onClick={() => handleAccept(reservation.id, reservation.username)}>Accept</button>
+    <button className="button-reject" onClick={() => handleReject(reservation.id, reservation.username)}>Reject</button>
+    <button className="button-report" onClick={() => handleAddReport(reservation.id)}>Add Report</button>
+  </div>
+</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
-      {message && <p>{message}</p>}
+      {message && <p className="message">{message}</p>}
     </div>
   );
 }
 
-export default adminOrder;
+export default AdminOrder;

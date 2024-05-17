@@ -1,20 +1,65 @@
+/* adminOrder.css */
+
 .table-container {
-    margin-top: 20px;
-  }
-  
-  .reservation-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .reservation-table th,
-  .reservation-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  .reservation-table th {
-    background-color: #f2f2f2;
-  }
-  
+  margin: 20px;
+}
+
+.reservation-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reservation-table th, .reservation-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.reservation-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.button-accept, .button-reject {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button-accept {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.button-accept:hover {
+  background-color: #45a049;
+}
+
+.button-reject {
+  background-color: #f44336;
+  color: white;
+}
+
+.button-reject:hover {
+  background-color: #e53935;
+}
+
+.message {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #333;
+}
+.button-verify{
+  background-color: aqua;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
