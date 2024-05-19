@@ -98,7 +98,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const Dashboard = () => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [activeComponent, setActiveComponent] = useState(null);
+  const [activeComponent, setActiveComponent] = useState('AdminDashboard'); // Set initial state to AdminDashboard
   const [username, setUsername] = useState('');
   const navigate = useNavigate(); // Initialize useNavigate
 
