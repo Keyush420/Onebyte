@@ -34,27 +34,27 @@ function AdminOrder() {
     }
   };
 
-  const handleAccept = async (id, username) => {
-    try {
-      await axios.put(`http://localhost:3002/acceptReservation/${id}`, { username: username });
-      fetchUserReservations();
-      setMessage('Congratulations! Your booking has been reserved.');
-      await axios.post('http://localhost:3002/notification', { username: username, message: 'Congratulations! Your booking has been reserved.' });
-    } catch (error) {
-      console.error('Error accepting reservation:', error);
-    }
-  };
+  // const handleAccept = async (id, username) => {
+  //   try {
+  //     await axios.put(`http://localhost:3002/acceptReservation/${id}`, { username: username });
+  //     fetchUserReservations();
+  //     setMessage('Congratulations! Your booking has been reserved.');
+  //     await axios.post('http://localhost:3002/notification', { username: username, message: 'Congratulations! Your booking has been reserved.' });
+  //   } catch (error) {
+  //     console.error('Error accepting reservation:', error);
+  //   }
+  // };
   
-  const handleReject = async (id, username) => {
-    try {
-      await axios.put(`http://localhost:3002/rejectReservation/${id}`, { username: username });
-      fetchUserReservations();
-      setMessage('Sorry, your booking has been rejected due to unavailable tables. Please book for another date.');
-      await axios.post('http://localhost:3002/notification', { username: username, message: 'Sorry, your booking has been rejected due to unavailable tables. Please book for another date.' });
-    } catch (error) {
-      console.error('Error rejecting reservation:', error);
-    }
-  };
+  // const handleReject = async (id, username) => {
+  //   try {
+  //     await axios.put(`http://localhost:3002/rejectReservation/${id}`, { username: username });
+  //     fetchUserReservations();
+  //     setMessage('Sorry, your booking has been rejected due to unavailable tables. Please book for another date.');
+  //     await axios.post('http://localhost:3002/notification', { username: username, message: 'Sorry, your booking has been rejected due to unavailable tables. Please book for another date.' });
+  //   } catch (error) {
+  //     console.error('Error rejecting reservation:', error);
+  //   }
+  // };
   
   // Add this function to handle adding reports
   const handleAddReport = async (id) => {
@@ -76,8 +76,8 @@ function AdminOrder() {
       <h1>User Reservations</h1>
       <div>
         <h2>Total Reservations: {counts.total}</h2>
-        <h2>Accepted Reservations: {counts.accepted}</h2>
-        <h2>Rejected Reservations: {counts.rejected}</h2>
+        {/* <h2>Accepted Reservations: {counts.accepted}</h2>
+        <h2>Rejected Reservations: {counts.rejected}</h2> */}
       </div>
       {isLoading ? (
         <p>Loading...</p>
@@ -115,8 +115,8 @@ function AdminOrder() {
                   </td>
                   <td>
   <div className="button-container">
-    <button className="button-accept" onClick={() => handleAccept(reservation.id, reservation.username)}>Accept</button>
-    <button className="button-reject" onClick={() => handleReject(reservation.id, reservation.username)}>Reject</button>
+    {/* <button className="button-accept" onClick={() => handleAccept(reservation.id, reservation.username)}>Accept</button>
+    <button className="button-reject" onClick={() => handleReject(reservation.id, reservation.username)}>Reject</button> */}
     <button className="button-report" onClick={() => handleAddReport(reservation.id)}>Add Report</button>
   </div>
 </td>
