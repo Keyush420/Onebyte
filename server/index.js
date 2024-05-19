@@ -250,6 +250,22 @@ app.post('/addReport/:id', (req, res) => {
   });
 });
 
+
+// Endpoint to fetch reports
+app.get('/reports', (req, res) => {
+  const SQL = 'SELECT * FROM report';
+
+  db.query(SQL, (err, results) => {
+      if (err) {
+          console.error('Error fetching reports:', err);
+          return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      res.status(200).json(results);
+  });
+});
+
+
+
 // Modify the accept endpoint to accept reservation with the given id and username
 app.put('/acceptReservation/:id', (req, res) => {
   const id = req.params.id;
