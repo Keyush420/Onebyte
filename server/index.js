@@ -408,6 +408,28 @@ app.get('/adminUsername', (req, res) => {
   });
 });
 
+
+
+// Endpoint to fetch admin username
+app.get('/adminUsername', (req, res) => {
+  // Create SQL statement to select the username from the adminuser table
+  const SQL = 'SELECT username FROM adminuser';
+
+  // Execute the SQL query
+  db.query(SQL, (err, results) => {
+      if (err) {
+          res.status(500).send({ error: err });
+          return;
+      }
+      if (results.length > 0) {
+          res.send(results[0].username);
+      } else {
+          res.status(404).send({ message: "Admin username not found!" });
+      }
+  });
+});
+
+
 // Start the server
 const port = 3002;
 app.listen(port, () => {
