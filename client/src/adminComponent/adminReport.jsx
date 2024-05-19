@@ -38,7 +38,8 @@ function Report() {
           <thead>
             <tr>
               <th>Reservation ID</th>
-              <th>Action</th>
+              <th>Reservation Name</th>
+              <th>Table Number</th>
               <th>Created At</th>
             </tr>
           </thead>
@@ -46,7 +47,8 @@ function Report() {
             {reports.map((report) => (
               <tr key={report.id}>
                 <td>{report.reservation_id}</td>
-                <td>{report.action}</td>
+                <td>{report.reservationName}</td>
+                <td>{report.tableNumber}</td>
                 <td>{formatDate(report.created_at)}</td> {/* Format date here */}
               </tr>
             ))}

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Image from '../../LoginAssets/Restaurent.png'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Image from '../../LoginAssets/Restaurent.png';
 import './userTable.css';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -38,33 +40,59 @@ const Table = () => {
       newReservation.reservationName &&
       newReservation.username
     ) {
-      axios
-        .post("http://localhost:3002/book_reservation", newReservation)
-        .then((response) => {
-          console.log("Reservation Booked:", response.data);
-          fetchReservations();
-          setNewReservation({
-            numberOfPeople: 1,
-            reservationDate: "",
-            reservationTime: "",
-            description: "",
-            tableNumber: 1,
-            reservationName: "",
-            username: "",
-          });
-          alert("Your booking has been sent. Please wait for confirmation.");
-        })
-        .catch((error) => {
-          console.error("Error booking reservation:", error);
-          if (error.response && error.response.data && error.response.data.message) {
-            alert(error.response.data.message);
-          } else {
-            alert("Error booking reservation. Please try again later.");
-          }
-        });
+      checkTableConflict(newReservation);
     } else {
-      alert("Please fill in all fields");
+      toast.warn("Please fill in all fields");
     }
+  };
+
+  const checkTableConflict = (reservation) => {
+    axios.get('http://localhost:3002/userReservations')
+      .then(response => {
+        const existingReservations = response.data;
+        const isConflict = existingReservations.some(existingReservation => 
+          existingReservation.tableNumber === reservation.tableNumber &&
+          existingReservation.reservationDate === reservation.reservationDate &&
+          existingReservation.reservationTime === reservation.reservationTime
+        );
+
+        if (isConflict) {
+          toast.error("The selected table is already reserved for the specified date and time.");
+        } else {
+          bookReservation(reservation);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching reservations:', error);
+        toast.error("Error checking table availability. Please try again later.");
+      });
+  };
+
+  const bookReservation = (reservation) => {
+    axios
+      .post("http://localhost:3002/book_reservation", reservation)
+      .then((response) => {
+        console.log("Reservation Booked:", response.data);
+        fetchReservations();
+        setNewReservation({
+          numberOfPeople: 1,
+          reservationDate: "",
+          reservationTime: "",
+          description: "",
+          tableNumber: 1,
+          reservationName: "",
+          username: "",
+        });
+        toast.success("Your booking has been sent. Please wait for confirmation.");
+      })
+      .catch((error) => {
+        console.error("Error booking reservation:", error);
+        if (error.response && error.response.data && error.response.data.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Error booking reservation. Please try again later.");
+        }
+      });
   };
 
   const fetchReservations = () => {
@@ -184,6 +212,7 @@ const Table = () => {
         <div className="image-section">
           <img src={Image} alt="Restaurant"/>
         </div>
+        <ToastContainer />
       </div>
     </div>
   );

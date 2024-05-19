@@ -92,7 +92,6 @@ function AdminOrder() {
                 <th>Reservation Time</th>
                 <th>Description</th>
                 <th>Table Number</th>
-                <th>Verify Username</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -106,17 +105,7 @@ function AdminOrder() {
                   <td>{reservation.description}</td>
                   <td>{reservation.tableNumber}</td>
                   <td>
-                    <input
-                      type="text"
-                      value={verification[reservation.id] || ''}
-                      onChange={(e) => handleVerificationChange(reservation.id, e.target.value)}
-                      placeholder="Enter username"
-                    />
-                  </td>
-                  <td>
   <div className="button-container">
-    {/* <button className="button-accept" onClick={() => handleAccept(reservation.id, reservation.username)}>Accept</button>
-    <button className="button-reject" onClick={() => handleReject(reservation.id, reservation.username)}>Reject</button> */}
     <button className="button-report" onClick={() => handleAddReport(reservation.id)}>Add Report</button>
   </div>
 </td>

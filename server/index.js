@@ -178,45 +178,39 @@ dbReservation.connect((err) => {
   console.log('Connected to MySQL database for reservations');
 });
 
-// Endpoint to handle reservation booking
-// Endpoint to handle reservation booking
+// Book reservation endpoint with conflict check
 app.post('/book_reservation', (req, res) => {
-  const { numberOfPeople, reservationDate, reservationTime, description, tableNumber, reservationName, username } = req.body;
+  const { reservationDate, reservationTime, numberOfPeople, description, tableNumber, reservationName, username } = req.body;
 
-  // Check if the username exists in the user table
-  const userQuery = 'SELECT * FROM user WHERE username = ?';
-  const userValues = [username];
+  // Check for table conflicts
+  const conflictQuery = 'SELECT * FROM userReservations WHERE tableNumber = ? AND reservationDate = ? AND reservationTime = ?';
+  const conflictValues = [tableNumber, reservationDate, reservationTime];
 
-  db.query(userQuery, userValues, (userErr, userResults) => {
-    if (userErr) {
-      console.error('Error checking username:', userErr);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;
+  db.query(conflictQuery, conflictValues, (err, results) => {
+    if (err) {
+      console.error('Error checking table conflicts:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
 
-    if (userResults.length === 0) {
-      // Username does not exist, return an error
-      res.status(401).json({ message: "Invalid username!" });
-      return;
+    if (results.length > 0) {
+      // Conflict found
+      return res.status(400).json({ message: 'The selected table is already reserved for the specified date and time.' });
     }
 
-    // Username exists, proceed with the reservation booking process
-    const SQL = 'INSERT INTO userreservations (numberOfPeople, reservationDate, reservationTime, description, tableNumber, reservationName, username, status) VALUES (?, ?, ?, ?, ?, ?, ?, "pending")';
+    // No conflict, proceed to book reservation
+    const SQL = 'INSERT INTO userReservations (numberOfPeople, reservationDate, reservationTime, description, tableNumber, reservationName, username) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const values = [numberOfPeople, reservationDate, reservationTime, description, tableNumber, reservationName, username];
 
-    db.query(SQL, [numberOfPeople, reservationDate, reservationTime, description, tableNumber, reservationName, username], (err, result) => {
+    db.query(SQL, values, (err, results) => {
       if (err) {
         console.error('Error booking reservation:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-        return;
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
-      res.status(200).json({ message: 'Reservation booked successfully', reservationId: result.insertId });
+      console.log('Reservation booked successfully!');
+      res.status(201).json({ message: 'Reservation Booked!' });
     });
   });
 });
-
-
-
-
 
 // Fetch user reservations from database
 app.get('/userReservations', (req, res) => {
@@ -236,7 +230,7 @@ app.post('/addReport/:id', (req, res) => {
   const id = req.params.id;
 
   // Add report to the report table
-  const SQL = 'INSERT INTO report (reservation_id, action) VALUES (?, ?)';
+  const SQL = 'INSERT INTO report (reservation_id, reservationName, tableNumber, created_at) VALUES (?, ?, ?, ?)';
   const values = [id, 'report'];
 
   db.query(SQL, values, (err, result) => {
@@ -251,119 +245,17 @@ app.post('/addReport/:id', (req, res) => {
 });
 
 
-// Endpoint to fetch reports
+// Example endpoint to fetch reports
 app.get('/reports', (req, res) => {
-  const SQL = 'SELECT * FROM report';
+  const SQL = 'SELECT reservation_id, reservationName, tableNumber, created_at FROM report';
 
   db.query(SQL, (err, results) => {
-      if (err) {
-          console.error('Error fetching reports:', err);
-          return res.status(500).json({ error: 'Internal Server Error' });
-      }
-      res.status(200).json(results);
-  });
-});
-
-
-
-// Modify the accept endpoint to accept reservation with the given id and username
-app.put('/acceptReservation/:id', (req, res) => {
-  const id = req.params.id;
-  const username = req.body.username;
-
-  // Update status of the reservation with the given id
-  const SQL = 'UPDATE userreservations SET status = "accepted" WHERE id = ?';
-
-  db.query(SQL, [id], (err, result) => {
     if (err) {
-      console.error('Error accepting reservation:', err);
+      console.error('Error fetching reports:', err);
       res.status(500).json({ error: 'Internal Server Error' });
-      return;
+    } else {
+      res.json(results);
     }
-
-    console.log('Reservation accepted successfully!');
-
-    // Add record to the report table
-    const reportSQL = 'INSERT INTO report (reservation_id, action) VALUES (?, ?)';
-    const values = [id, 'accept'];
-
-    db.query(reportSQL, values, (reportErr, reportResult) => {
-      if (reportErr) {
-        console.error('Error adding report:', reportErr);
-        res.status(500).json({ error: 'Internal Server Error' });
-        return;
-      }
-      console.log('Report added for reservation acceptance!');
-      res.status(200).json({ message: 'Reservation accepted!' });
-    });
-  });
-});
-
-// Modify the reject endpoint to reject reservation with the given id and username
-app.put('/rejectReservation/:id', (req, res) => {
-  const id = req.params.id;
-  const username = req.body.username;
-
-  // Update status of the reservation with the given id
-  const SQL = 'UPDATE userreservations SET status = "rejected" WHERE id = ?';
-
-  db.query(SQL, [id], (err, result) => {
-    if (err) {
-      console.error('Error rejecting reservation:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;
-    }
-
-    console.log('Reservation rejected successfully!');
-
-    // Add record to the report table
-    const reportSQL = 'INSERT INTO report (reservation_id, action) VALUES (?, ?)';
-    const values = [id, 'reject'];
-
-    db.query(reportSQL, values, (reportErr, reportResult) => {
-      if (reportErr) {
-        console.error('Error adding report:', reportErr);
-        res.status(500).json({ error: 'Internal Server Error' });
-        return;
-      }
-      console.log('Report added for reservation rejection!');
-      res.status(200).json({ message: 'Reservation rejected!' });
-    });
-  });
-});
-
-// Modify the notification endpoint to accept the username along with the message
-app.post('/notification', (req, res) => {
-  const { username, message } = req.body;
-
-  // Insert the notification message and username into the notification table
-  const SQL = 'INSERT INTO notification (message) VALUES (?)';
-  const values = [username, message];
-
-  db.query(SQL, values, (err, result) => {
-    if (err) {
-      console.error('Error inserting notification:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;
-    }
-    console.log('Notification added successfully!');
-    res.status(201).json({ message: 'Notification added!' });
-  });
-});
-
-
-// Endpoint to fetch notifications for a specific user
-app.get('/notifications', (req, res) => {
-  const username = req.params.username;
-  const SQL = 'SELECT message FROM notification';
-
-  db.query(SQL, [username], (err, results) => {
-    if (err) {
-      console.error('Error fetching notifications:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;
-    }
-    res.status(200).json(results);
   });
 });
 
