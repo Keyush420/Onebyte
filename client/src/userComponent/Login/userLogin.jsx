@@ -31,10 +31,6 @@ const Login = () => {
       if (response.data.message) {
         setErrorMessage(response.data.message); // Set error message if authentication fails
       } else {
-        // Store username and token in local storage
-        localStorage.setItem('username', response.data.username);
-        localStorage.setItem('token', response.data.token); // if you're using JWT or some token
-
         navigateTo('/userDashboard'); // Navigate to dashboard if login is successful
       }
     }).catch(error => {

@@ -31,7 +31,7 @@ const Dashboard = () => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch(`http://localhost:3002/notifications/${username}`);
+      const response = await fetch(`http://localhost:3002/notifications/`);
       const data = await response.json();
       setNotifications(data);
     } catch (error) {

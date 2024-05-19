@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AdminLogin from './adminComponent/adminLogin';
-import AdminDashboard from './adminComponent/adminDashboard';
+import AdminDashboard from './adminComponent/AdminDashboard';
 import AdminMenu from './adminComponent/adminMenu';
 import AdminTable from './adminComponent/adminTable';
 import UserDashboard from './userComponent/Dashboard/userDashboard'

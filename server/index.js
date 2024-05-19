@@ -1,13 +1,10 @@
-require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
-const jwt = require('jsonwebtoken'); // Import JWT library
 const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
-// Set up JWT secret key (use a secure secret key)
-const SECRET_KEY = process.env.JWT_SECRET
+
 // MySQL connection for user registration and login
 const db = mysql.createConnection({
   user: 'root',
@@ -49,56 +46,25 @@ app.post('/userRegister', (req, res) => {
 
 // User login endpoint
 app.post('/userLogin', (req, res) => {
-  const { username, password } = req.body;
+  const username = req.body.username;
+  const password = req.body.password;
 
-  // Validate username and password
-  const SQL = 'SELECT id, username FROM users WHERE username = ? AND password = ?';
+  // Create SQL statement to select the user from the Database table 'users'
+  const SQL = 'SELECT * FROM user WHERE username = ? AND password = ?';
+  const values = [username, password];
 
-  db.query(SQL, [username, password], (err, results) => {
-    if (err) {
-      console.error('Error logging in:', err);
-      return res.status(500).json({ message: 'Internal Server Error' });
-    }
-
-    if (results.length > 0) {
-      // Generate a token
-      const token = jwt.sign({ id: results[0].id, username: results[0].username }, SECRET_KEY, { expiresIn: '1h' });
-
-      res.status(200).json({ username: results[0].username, token });
-    } else {
-      res.status(401).json({ message: 'Invalid username or password' });
-    }
+  // Execute the SQL query
+  db.query(SQL, values, (err, results) => {
+      if (err) {
+          res.status(500).send({ error: err });
+          return;
+      }
+      if (results.length > 0) {
+          res.send(results);
+      } else {
+          res.status(401).send({ message: "Credentials don't match!" });
+      }
   });
-});
-
-// Middleware function to verify JWT token and user identity
-function verifyTokenAndUser(req, res, next) {
-  const token = req.headers.authorization;
-
-  if (!token) {
-    return res.status(403).json({ message: 'Token not provided' });
-  }
-
-  jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: 'Failed to authenticate token' });
-    }
-
-    const username = decoded.username; // Extract username from decoded token
-    const requestedUsername = req.params.username; // Extract username from URL parameters
-
-    if (username !== requestedUsername) {
-      return res.status(403).json({ message: 'Unauthorized access to notifications' });
-    }
-
-    next();
-  });
-}
-
-// Protected route example
-app.get('/protectedRoute', verifyToken, (req, res) => {
-  // This route is protected, only accessible with a valid token
-  res.json({ message: 'This is a protected route' });
 });
 
 // Admin login endpoint
@@ -355,7 +321,7 @@ app.post('/notification', (req, res) => {
   const { username, message } = req.body;
 
   // Insert the notification message and username into the notification table
-  const SQL = 'INSERT INTO notification (username, message) VALUES (?, ?)';
+  const SQL = 'INSERT INTO notification (message) VALUES (?)';
   const values = [username, message];
 
   db.query(SQL, values, (err, result) => {
@@ -371,9 +337,9 @@ app.post('/notification', (req, res) => {
 
 
 // Endpoint to fetch notifications for a specific user
-app.get('/notifications/:username', verifyTokenAndUser, (req, res) => {
+app.get('/notifications', (req, res) => {
   const username = req.params.username;
-  const SQL = 'SELECT message FROM notification WHERE username = ?';
+  const SQL = 'SELECT message FROM notification';
 
   db.query(SQL, [username], (err, results) => {
     if (err) {
