@@ -20,8 +20,8 @@ const Dashboard = () => {
   
   const [showNav, setShowNav] = useState(false);
 
-  // Assume the username is available
-  const username = ""; // Replace this with actual logic to get the logged-in username
+  
+  const username = ""; 
 
  
   const toggleMenuDrawer = (open) => (event) => {
