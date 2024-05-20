@@ -75,4 +75,75 @@
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #0b0909;
+  border-top: 1px solid #e7e7e7;
+  color: white;
+}
+
+.contact-info,
+.name,
+.time {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.contact-info h2,
+.time p {
+  margin-bottom: 8px;
+}
+
+.name h1 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.middle-container {
+  display: flex;
+  padding-left: 30px;
+}
+
+.middle {
+  margin: 0 8px;
+}
+
+.icons {
+  font-size: 22px;
+  color: #e89292;
+}
+
+.icons:hover {
+  color: #f8f8f8;
+}
+
+.time p {
+  margin: 0;
+}
+
+strong {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 3px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+  }
+  .contact-info,
+  .name,
+  .time {
+    margin: 10px 0;
+    text-align: center;
+  }
+  .middle-container {
+    justify-content: center;
+  }
 }/*# sourceMappingURL=userTable.css.map */

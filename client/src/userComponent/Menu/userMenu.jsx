@@ -178,50 +178,49 @@ const Menu = () => {
       </div>
 
       <footer className="footer">
-      <div className="contact-info">
-        <div>
-          <h2>GET IN TOUCH</h2>
-          <p>
-            Kathmandu, Nepal <br />
-            (718) 489-9042 <br />
-            byteone@gmail.com
-          </p>
+        <div className="contact-info">
+          <div>
+            <h2>GET IN TOUCH</h2>
+            <p>
+              Kathmandu, Nepal <br />
+              (718) 489-9042 <br />
+              byteone@gmail.com
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="name">
-        <div>
+        <div className="name">
           <h1>oneBytefood</h1>
+          <div className="middle-container">
+            <div className="middle">
+              <a href="https://www.instagram.com/">
+                <FaInstagram className="icons" />
+              </a>
+            </div>
+            <div className="middle">
+              <a href="https://www.facebook.com/">
+                <FaFacebook className="icons" />
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div className="time">
-        <div>
-        <p>
-            <strong>Hours</strong> <br />
-            Monday: Closed <br />
-            Tuesday – Sunday: 10 AM – 10 PM
-            <br />
-            <strong>Brunch hours:</strong> <br />
-            Tuesday – Sunday: 3 PM – Closing
-          </p>
-
+        <div className="time">
+          <div>
+            <p>
+              <strong>Hours</strong> <br />
+              Monday: Closed <br />
+              Tuesday – Sunday: 10 AM – 10 PM
+              <br />
+              <strong>Brunch hours:</strong> <br />
+              Tuesday – Sunday: 3 PM – Closing
+            </p>
+          </div>
         </div>
-      </div>
-
-      <div className="social-links">
-        <div className="social-linksIcons">
-          <a href="https://www.instagram.com/">
-            <FaInstagram className="icons" />
-          </a>
-          <a href="https://www.facebook.com/">
-            <FaFacebook className="icons" />
-          </a>
-        </div>
-      </div>
       </footer>
     </div>
   );
 };
+;
 
 export default Menu;

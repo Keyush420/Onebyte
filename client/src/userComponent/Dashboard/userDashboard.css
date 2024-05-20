@@ -228,49 +228,4 @@ ul li a.active {
 .galleryHeader,
 .reservationHeader {
   padding: 30px;
-}
-
-.footer {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: black;
-  color: white;
-  padding: 20px 0;
-}
-
-.contact-info, .name, .time {
-  text-align: center;
-}
-
-.social-links {
-  display: flex;
-  width: 300px;
-}
-
-.social-links a {
-  color: white;
-  margin-right: 10px;
-}
-
-.social-links a:last-child {
-  margin-right: 0;
-}
-
-/* Centering oneBytefood */
-.name {
-  flex-grow: 1;
-  text-align: center;
-}
-
-.bell-icon {
-  text-align: right;
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  cursor: pointer;
-  background: white;
-  padding: 10px;
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }/*# sourceMappingURL=userDashboard.css.map */

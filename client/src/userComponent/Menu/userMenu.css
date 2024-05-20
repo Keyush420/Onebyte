@@ -63,41 +63,71 @@
 
 .footer {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: black;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #0b0909;
+  border-top: 1px solid #e7e7e7;
   color: white;
-  padding: 80px 0;
 }
 
-.contact-info, .name, .time {
-  text-align: center;
+.contact-info,
+.name,
+.time {
+  flex: 1;
+  margin: 0 10px;
 }
 
-.social-links {
+.contact-info h2,
+.time p {
+  margin-bottom: 8px;
+}
+
+.name h1 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.middle-container {
   display: flex;
-  width: 300px;
+  padding-left: 30px;
 }
 
-.social-links a {
-  color: white;
-  margin-right: 10px;
+.middle {
+  margin: 0 8px;
 }
 
-.social-links a:last-child {
-  margin-right: 0;
+.icons {
+  font-size: 22px;
+  color: #e89292;
 }
 
-/* Centering oneBytefood */
-/* Menu.css */
-.name {
-  flex-grow: 1;
-  text-align: center;
-  display: flex; /* Make it a flex container */
-  flex-direction: column; /* Align items in a column */
-  align-items: center; /* Center items horizontally */
+.icons:hover {
+  color: #f8f8f8;
 }
 
-.name .icon {
-  margin-top: 5px; /* Adjust margin between name and icon */
+.time p {
+  margin: 0;
+}
+
+strong {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 3px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+  }
+  .contact-info,
+  .name,
+  .time {
+    margin: 10px 0;
+    text-align: center;
+  }
+  .middle-container {
+    justify-content: center;
+  }
 }/*# sourceMappingURL=userMenu.css.map */

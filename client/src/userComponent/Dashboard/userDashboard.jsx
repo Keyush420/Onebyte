@@ -158,6 +158,7 @@ const Dashboard = () => {
           <Link to="/userTable">Reserve Now</Link>
         </div>
       </section>
+      
       <footer className="footer">
         <div className="contact-info">
           <div>
@@ -169,11 +170,23 @@ const Dashboard = () => {
             </p>
           </div>
         </div>
+
         <div className="name">
-          <div>
-            <h1>oneBytefood</h1>
+          <h1>oneBytefood</h1>
+          <div className="middle-container">
+            <div className="middle">
+              <a href="https://www.instagram.com/">
+                <FaInstagram className="icons" />
+              </a>
+            </div>
+            <div className="middle">
+              <a href="https://www.facebook.com/">
+                <FaFacebook className="icons" />
+              </a>
+            </div>
           </div>
         </div>
+
         <div className="time">
           <div>
             <p>
@@ -186,19 +199,10 @@ const Dashboard = () => {
             </p>
           </div>
         </div>
-        <div className="social-links">
-          <div className="socialIcons">
-            <a href="https://www.instagram.com/">
-              <FaInstagram className="icons" />
-            </a>
-            <a href="https://www.facebook.com/">
-              <FaFacebook className="icons" />
-            </a>
-          </div>
-        </div>
       </footer>
     </div>
   );
-}
+};
+
 
 export default Dashboard;
