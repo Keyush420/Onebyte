@@ -265,9 +265,6 @@ app.get('/reservations/count', (req, res) => {
   const SQL = `
     SELECT 
       COUNT(*) AS total,
-      SUM(CASE WHEN status = 'accepted' THEN 1 ELSE 0 END) AS accepted,
-      SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) AS rejected,
-      SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending
     FROM userreservations`;
 
   db.query(SQL, (err, results) => {
