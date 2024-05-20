@@ -60,7 +60,6 @@ import UserContact from './userComponent/Contact/userContact'
 import UserMenu from './userComponent/Menu/userMenu'
 import UserRegister from './userComponent/Register/userRegister'
 import UserTable from './userComponent/Table/userTable'
-import UserProfile from './userComponent/Profile/userProfile'
 import AdminReport from './adminComponent/adminReport'
 import AdminOrder from './adminComponent/adminOrder'
 import AdminLogout from './adminComponent/adminLogout'; // Ensure correct capitalization
@@ -85,7 +84,7 @@ function App() {
         <Route path="/userGallery" element={<UserGallery />} />
         <Route path="/userContact" element={<UserContact />} />
         <Route path="/userTable" element={<UserTable />} />
-        <Route path="/userProfile" element={<UserProfile />} />
+        
       </Routes>
     </Router>
   );

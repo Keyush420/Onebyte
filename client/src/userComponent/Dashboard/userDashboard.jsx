@@ -5,7 +5,6 @@ import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import { FaBell } from "react-icons/fa";
 import './userDashboard.css';
 import cake from '../../LoginAssets/cake.jpg'
 import salad from '../../LoginAssets/salad.jpg'
@@ -18,27 +17,13 @@ import { FaFacebook } from "react-icons/fa";
 
 const Dashboard = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  
   const [showNav, setShowNav] = useState(false);
 
   // Assume the username is available
   const username = ""; // Replace this with actual logic to get the logged-in username
 
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
-
-  const fetchNotifications = async () => {
-    try {
-      const response = await fetch(`http://localhost:3002/notifications/`);
-      const data = await response.json();
-      setNotifications(data);
-    } catch (error) {
-      console.error('Failed to fetch notifications', error);
-    }
-  };
-
+ 
   const toggleMenuDrawer = (open) => (event) => {
     if (
       event.type === 'keydown' &&
@@ -50,16 +35,6 @@ const Dashboard = () => {
     setShowMenu(open);
   };
 
-  const toggleNotificationsDrawer = (open) => (event) => {
-    if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
-    ) {
-      return;
-    }
-
-    setShowNotifications(open);
-  };
 
   return (
     <div className="landing">
@@ -74,27 +49,11 @@ const Dashboard = () => {
           <li><Link to="/userGallery">GALLERY</Link></li>
           <li><Link to="/userContact">CONTACT</Link></li>
           <li><Link to="/userTable">RESERVATION</Link></li>
-          <li><Link to="/userProfile">PROFILE</Link></li>
+          
           <li><Link to="/">LOG OUT</Link></li>
         </ul>
       </div>
-      <div className="notifi" onClick={toggleNotificationsDrawer(true)}>
-        <FaBell />
-      </div>
-      <Drawer
-        anchor="right"
-        open={showNotifications}
-        onClose={toggleNotificationsDrawer(false)}
-      >
-        <div className="notifications">
-          <h2>Notifications</h2>
-          <ul>
-            {notifications.map((notification, index) => (
-              <li key={index}>{notification.message}</li>
-            ))}
-          </ul>
-        </div>
-      </Drawer>
+     
       <div className="main">
         <h1>ONE BYTE</h1>
       </div>

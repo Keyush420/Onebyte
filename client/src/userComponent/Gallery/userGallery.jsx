@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
+import { FaInstagram } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
 import './userGallery.css';
 import burger from '../../LoginAssets/burger.jpg';
 import momo from '../../LoginAssets/momo.jpg';

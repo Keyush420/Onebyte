@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Image from '../../LoginAssets/Restaurent.png';
 import './userTable.css';
 import MenuIcon from '@mui/icons-material/Menu';
+import { FaInstagram } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
 
 const Table = () => {
   const [newReservation, setNewReservation] = useState({
