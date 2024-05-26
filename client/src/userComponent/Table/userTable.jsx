@@ -16,8 +16,7 @@ const Table = () => {
     reservationTime: '',
     description: '',
     tableNumber: 1,
-    reservationName: '',
-    username: '' // New field for username
+    reservationName: ''
   });
 
   const [reservations, setReservations] = useState([]);
@@ -39,8 +38,7 @@ const Table = () => {
       newReservation.numberOfPeople &&
       newReservation.description &&
       newReservation.tableNumber &&
-      newReservation.reservationName &&
-      newReservation.username
+      newReservation.reservationName
     ) {
       checkTableConflict(newReservation);
     } else {
@@ -83,7 +81,6 @@ const Table = () => {
           description: "",
           tableNumber: 1,
           reservationName: "",
-          username: "",
         });
         toast.success("Your booking has been sent. Please wait for confirmation.");
       })
@@ -116,16 +113,15 @@ const Table = () => {
       <div className="burger-icon" onClick={() => setShowNav(!showNav)}>
         <MenuIcon />
       </div>
-      <div className={`sidenav ${showNav ? 'active' : ''}`}>
+        <div className={`sidenav ${showNav ? 'active' : ''}`}>
         <ul>
-          <li><Link to='/userDashboard'>HOME</Link></li>
-          <li><Link to="/userMenu">MENU</Link></li>
+          <li><Link to='/userDashboard'>Home</Link></li>
+          <li><Link to="/userMenu">Menu</Link></li>
           <li><Link to="/userAbout">About</Link></li>
-          <li><Link to="/userGallery">GALLERY</Link></li>
-          <li><Link to="/userContact">CONTACT</Link></li>
-          <li><Link to="/userTable">RESERVATION</Link></li>
-          <li><Link to="/userProfile">PROFILE</Link></li>
-          <li><Link to="/">LOG OUT</Link></li>
+          <li><Link to="/userGallery">Gallery</Link></li>
+          <li><Link to="/userContact">Contact</Link></li>
+          <li><Link to="/userTable">Reservations</Link></li>
+          <li><Link to="/">LogOut</Link></li>
         </ul>
       </div>
       <div className="reservation-container">
@@ -197,16 +193,6 @@ const Table = () => {
               onKeyDown={preventTyping}
               min={1}
               max={9}
-            />
-          </div>
-          <div className="name">
-            <h3>Enter your username for verification</h3>
-            <input
-              type="text"
-              placeholder="Username"
-              name="username"
-              value={newReservation.username}
-              onChange={handleInputChange}
             />
           </div>
         </div>

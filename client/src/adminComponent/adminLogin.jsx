@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../adminApp.css';
+import '../userApp.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 
@@ -75,19 +75,19 @@ const Login = () => {
           <form onSubmit={handleSubmit} className='form grid'>
             <span className='message'>Login Status will go here</span>
 
-            <div className="inputDiv">
+            <div className="userDiv">
               <label htmlFor="username">Username</label>
-              <div className='input flex'>
+              <div className='usernameInput flex'>
                 <FaUserShield className='icon'/>
                 <input type="text" id='username' placeholder='Enter Username' value={username} onChange={(e) => setUsername(e.target.value)}/>
               </div>
             </div>
 
-            <div className="inputDiv">
+            <div className="passwordDiv">
               <label htmlFor="password">Password</label>
-              <div className='input flex'>
+              <div className='passwordInput flex'>
                 <BsFillShieldLockFill className='icon'/>
-                <input type="password" id='password' placeholder='Enter Password' value={password} onChange={(e) => setPassword(e.target.value)}/>
+                <input className='in' type="password" id='password' placeholder='Enter Password' value={password} onChange={(e) => setPassword(e.target.value)}/>
               </div>
             </div>
 
@@ -99,11 +99,13 @@ const Login = () => {
             <span className='forgotPassword'>
               Forgot Your Password? <a href="">Click Here</a>
             </span>
+            <span className='forgotPassword'>
+            Are you user? 
+            <a href="/userLogin">Login Here</a>
+            </span>
           </form>
         </div>
-        <div className="userPart">
-        <a href="/userLogin">Are you user? Login Here</a>
-      </div>
+        
       </div>
     </div>
   )

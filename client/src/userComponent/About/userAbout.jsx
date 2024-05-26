@@ -89,7 +89,6 @@ const About = () => {
           <li><Link to="/userGallery">GALLERY</Link></li>
           <li><Link to="/userContact">CONTACT</Link></li>
           <li><Link to="/userTable">RESERVATION</Link></li>
-          <li><Link to="/userProfile">PROFILE</Link></li>
           <li><Link to="/">LOG OUT</Link></li>
         </ul>
       </div>

@@ -23,8 +23,8 @@ db.connect((err) => {
 });
 
 // User registration endpoint
-app.post('/userRegister', (req, res) => {
-  const { email, username, password } = req.body;
+app.post('/userRegister', (req, res) => {       //Defines a POST endpoint for userRegister.
+  const { email, username, password } = req.body;  //req.body: Contains the request data (email, username, password).
 
   if (!email) {
     return res.status(400).json({ error: 'Email is required' });
@@ -45,9 +45,8 @@ app.post('/userRegister', (req, res) => {
 });
 
 // User login endpoint
-app.post('/userLogin', (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+app.post('/userLogin', (req, res) => {      //Defines a POST endpoint for user login.
+  const { username, password } = req.body       //req.body: Contains the request data (username, password)
 
   // Create SQL statement to select the user from the Database table 'users'
   const SQL = 'SELECT * FROM user WHERE username = ? AND password = ?';
@@ -98,8 +97,7 @@ app.post('/add_menu_item', (req, res) => {
   if (!name || !price || !imageUrl) {
     return res.status(400).json({ error: 'Name, price, and imageUrl are required' });
   }
-
-  const SQL = 'INSERT INTO menu_items (name, price, imageUrl) VALUES (?, ?, ?)';
+const SQL = 'INSERT INTO menu_items (name, price, imageUrl) VALUES (?, ?, ?)';
   const values = [name, price, imageUrl];
 
   db.query(SQL, values, (err, results) => {
@@ -180,10 +178,10 @@ dbReservation.connect((err) => {
 
 // Book reservation endpoint with conflict check
 app.post('/book_reservation', (req, res) => {
-  const { reservationDate, reservationTime, numberOfPeople, description, tableNumber, reservationName, username } = req.body;
+  const { reservationDate, reservationTime, numberOfPeople, description, tableNumber, reservationName} = req.body;
 
   // Check for table conflicts
-  const conflictQuery = 'SELECT * FROM userReservations WHERE tableNumber = ? AND reservationDate = ? AND reservationTime = ?';
+  const conflictQuery = 'SELECT * FROM userReservations WHERE tableNumber = ? AND reservationDate = ? AND HOUR(reservationTime) = HOUR(?)';
   const conflictValues = [tableNumber, reservationDate, reservationTime];
 
   db.query(conflictQuery, conflictValues, (err, results) => {
@@ -194,12 +192,12 @@ app.post('/book_reservation', (req, res) => {
 
     if (results.length > 0) {
       // Conflict found
-      return res.status(400).json({ message: 'The selected table is already reserved for the specified date and time.' });
+      return res.status(400).json({ message: 'The selected table is already reserved for the specified hour.' });
     }
 
     // No conflict, proceed to book reservation
-    const SQL = 'INSERT INTO userReservations (numberOfPeople, reservationDate, reservationTime, description, tableNumber, reservationName, username) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    const values = [numberOfPeople, reservationDate, reservationTime, description, tableNumber, reservationName, username];
+    const SQL = 'INSERT INTO userReservations (numberOfPeople, reservationDate, reservationTime, description, tableNumber, reservationName) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [numberOfPeople, reservationDate, reservationTime, description, tableNumber, reservationName];
 
     db.query(SQL, values, (err, results) => {
       if (err) {
@@ -211,7 +209,6 @@ app.post('/book_reservation', (req, res) => {
     });
   });
 });
-
 // Fetch user reservations from database
 app.get('/userReservations', (req, res) => {
   const SQL = 'SELECT * FROM userreservations';
@@ -225,22 +222,37 @@ app.get('/userReservations', (req, res) => {
   });
 });
 
-// Endpoint to add a report
 app.post('/addReport/:id', (req, res) => {
   const id = req.params.id;
 
-  // Add report to the report table
-  const SQL = 'INSERT INTO report (reservation_id, reservationName, tableNumber, created_at) VALUES (?, ?, ?, ?)';
-  const values = [id, 'report'];
-
-  db.query(SQL, values, (err, result) => {
+  // Fetch reservation details by id
+  const fetchReservationQuery = 'SELECT * FROM userReservations WHERE id = ?';
+ 
+  db.query(fetchReservationQuery, [id], (err, reservationResults) => {
     if (err) {
-      console.error('Error adding report:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;
+      console.error('Error fetching reservation:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
-    console.log('Report added successfully!');
-    res.status(200).json({ message: 'Report added!' });
+   
+    if (reservationResults.length === 0) {
+      return res.status(404).json({ message: 'Reservation not found' });
+    }
+
+    const reservation = reservationResults[0];
+    const { reservationName, tableNumber, numberOfPeople, reservationDate, reservationTime, description, username } = reservation;
+
+    // Insert report details
+    const SQL = 'INSERT INTO report (reservation_id, reservationName, tableNumber, numberOfPeople, reservationDate, reservationTime, description, username, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())';
+    const values = [id, reservationName, tableNumber, numberOfPeople, reservationDate, reservationTime, description, username];
+
+    db.query(SQL, values, (err, result) => {
+      if (err) {
+        console.error('Error adding report:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      console.log('Report added successfully!');
+      res.status(200).json({ message: 'Report added!' });
+    });
   });
 });
 
@@ -264,7 +276,7 @@ app.get('/reports', (req, res) => {
 app.get('/reservations/count', (req, res) => {
   const SQL = `
     SELECT 
-      COUNT(*) AS total,
+      COUNT(*) AS total
     FROM userreservations`;
 
   db.query(SQL, (err, results) => {
@@ -277,8 +289,18 @@ app.get('/reservations/count', (req, res) => {
   });
 });
 
+// Endpoint to fetch all user reservations in ascending order by date
+app.get('/reservations/all', (req, res) => {
+  const SQL = 'SELECT * FROM userreservations ORDER BY reservationDate ASC';
 
-
+  db.query(SQL, (error, results) => {
+    if (error) {
+      console.error('Error fetching user reservations:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+    res.json(results);
+  });
+});
 app.get('/adminUsername', (req, res) => {
   // Create SQL statement to select the username from the adminuser table
   const SQL = 'SELECT username FROM adminuser';

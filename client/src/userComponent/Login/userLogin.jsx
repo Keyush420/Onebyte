@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import './userLogin.css';
 import '../../userApp.css';
-import video from '../../LoginAssets/video.mp4';
-import logo from '../../LoginAssets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { AiOutlineSwapRight } from 'react-icons/ai';
+import Axios from 'axios';
+
+// Import our assets
+import video from '../../LoginAssets/video.mp4';
+import logo from '../../LoginAssets/logo.jpg';
+
+// Imported Icons
 import { FaUserShield } from 'react-icons/fa';
 import { BsFillShieldLockFill } from 'react-icons/bs';
-import Axios from 'axios';
+import { AiOutlineSwapRight } from 'react-icons/ai';
 
 const Login = () => {
   const [loginUserName, setLoginUserName] = useState('');
@@ -18,7 +21,6 @@ const Login = () => {
   const loginUser = (e) => {
     e.preventDefault();
 
-    // Check if username or password is empty
     if (!loginUserName.trim() || !loginPassword.trim()) {
       setErrorMessage('Username and password cannot be left empty.');
       return;
@@ -29,66 +31,66 @@ const Login = () => {
       password: loginPassword
     }).then((response) => {
       if (response.data.message) {
-        setErrorMessage(response.data.message); // Set error message if authentication fails
+        setErrorMessage(response.data.message);
       } else {
-        navigateTo('/userDashboard'); // Navigate to dashboard if login is successful
+        navigateTo('/userDashboard');
       }
     }).catch(error => {
       console.error('Error logging in:', error);
-      setErrorMessage('An error occurred. Please try again.'); // Set generic error message
+      setErrorMessage('An error occurred. Please try again.');
     });
   };
 
   return (
-    <div className="loginPage flex">
-      <div className="container flex">
-        <div className="formDiv flex">
+    <div className='loginPage flex'>
+      <div className='container flex'>
+        <div className='formDiv flex'>
           <div className="headerDiv">
-            <img src={logo} alt="Logo image" />
+            <img src={logo} alt="Logo Image" />
             <h3>Welcome Back!</h3>
           </div>
+
           <form action="" className="form grid" onSubmit={loginUser}>
             {errorMessage && <div className="error">{errorMessage}</div>}
-            <div className="inputDiv">
+            <span className='message'>Login Status will go here</span>
+
+            <div className="userDiv">
               <label htmlFor="username">Username</label>
-              <div className="input flex">
-                <FaUserShield className="icon" />
-                <input
-                  type="text"
-                  id="username"
-                  placeholder="Enter Username"
-                  value={loginUserName}
-                  onChange={(event) => setLoginUserName(event.target.value)}
-                />
+              <div className='usernameInput flex'>
+                <FaUserShield className='icon'/>
+                <input className='out' type="text" id="username" placeholder="Enter Username" value={loginUserName} onChange={(event) => setLoginUserName(event.target.value)}/>
               </div>
             </div>
-            <div className="inputDiv">
+
+            <div className="passwordDiv">
               <label htmlFor="password">Password</label>
-              <div className="input flex">
-                <BsFillShieldLockFill className="icon" />
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="Enter Password"
-                  value={loginPassword}
-                  onChange={(event) => setLoginPassword(event.target.value)}
-                />
+              <div className='passwordInput flex'>
+                <BsFillShieldLockFill className='icon'/>
+                <input className='in' type="password" id="password" placeholder="Enter Password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)}/>
               </div>
             </div>
-            <button type="submit" className="btn flex">
+
+            <button type='submit' className='btn flex'>
               <span>Login</span>
-              <AiOutlineSwapRight className="icon" />
+              <AiOutlineSwapRight className='icon'/>
             </button>
-            <span className="forgotPassword">
-              Forgot your password? <Link to="">Click here!</Link>
+            <span className='forgotPassword'>
+              Forgot Your Password? <a href="">Click Here</a>
+            </span>
+            <span className='forgotPassword'>
+            Are you admin? 
+            <a href="/adminLogin">Login Here</a>
             </span>
           </form>
+          
         </div>
-        <div className="videoDiv">
+        
+      <div className='videoDiv'>
           <video src={video} autoPlay muted loop></video>
-          <div className="textDiv">
-            <h2 className="title">Create and reserve products</h2>
-            <p>Adopt the restaurant!</p>
+
+          <div className='textDiv'>
+            <h2 className='title'>Create And Sell Extraordinary Products</h2>
+            <p>Adopt the peace of nature!</p>
           </div>
           <div className="footerDiv flex">
             <span className="text">Don't have an account?</span>
@@ -98,11 +100,8 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <div className="adminPart">
-        <a href="/adminLogin">Are you admin? Login Here</a>
-      </div>
     </div>
-  );
-};
+  )
+}
 
 export default Login;

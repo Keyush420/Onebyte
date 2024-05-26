@@ -13,6 +13,10 @@ import sushi from '../../LoginAssets/sushi.jpg';
 import straw from '../../LoginAssets/straw.jpg';
 import soup from '../../LoginAssets/soup.jpg';
 import kimbap from '../../LoginAssets/kimbap.jpg';
+import oreo from '../../LoginAssets/oreo.jpg';
+import curry from '../../LoginAssets/newcurry.jpg';
+import meatballs from '../../LoginAssets/newmeatballs.jpg';
+import sanwich from '../../LoginAssets/newsandwich.jpg';
 
 const Gallery = () => {
   const [showNav, setShowNav] = useState(false);
@@ -21,15 +25,14 @@ const Gallery = () => {
       <div className="burger-icon" onClick={() => setShowNav(!showNav)}>
         <MenuIcon />
       </div>
-      <div className={`sidenav ${showNav ? 'active' : ''}`}>
+        <div className={`sidenav ${showNav ? 'active' : ''}`}>
         <ul>
-        <li><Link to='/userDashboard'>HOME</Link></li>
+          <li><Link to='/userDashboard'>HOME</Link></li>
           <li><Link to="/userMenu">MENU</Link></li>
-          <li><Link to="/userAbout">About</Link></li>
+          <li><Link to="/userAbout">ABOUT</Link></li>
           <li><Link to="/userGallery">GALLERY</Link></li>
           <li><Link to="/userContact">CONTACT</Link></li>
           <li><Link to="/userTable">RESERVATION</Link></li>
-          <li><Link to="/userProfile">PROFILE</Link></li>
           <li><Link to="/">LOG OUT</Link></li>
         </ul>
       </div>
@@ -43,6 +46,10 @@ const Gallery = () => {
       <img src={straw} alt="straw" />
       <img src={soup} alt="soup" />
       <img src={kimbap} alt="kimbap" />
+      <img src={oreo} alt="oreo" />
+      <img src={meatballs} alt="meatballs" />
+      <img src={sanwich} alt="sandwich" />
+      <img src={curry} alt="curry" />
     </div>
 
 

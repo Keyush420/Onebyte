@@ -1,41 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import './userDashboard.css';
 import cake from '../../LoginAssets/cake.jpg'
 import salad from '../../LoginAssets/salad.jpg'
 import lunch from '../../LoginAssets/lunch.jpg'
 import dinner from '../../LoginAssets/dinner.jpg'
+import oreo from '../../LoginAssets/oreo.jpg'
 import dessert from '../../LoginAssets/dessert.jpg'
 import about from '../../LoginAssets/about.jpg'
 import { FaInstagram } from "react-icons/fa";
 import { FaFacebook } from "react-icons/fa";
 
 const Dashboard = () => {
-  const [showMenu, setShowMenu] = useState(false);
-  
   const [showNav, setShowNav] = useState(false);
-
-  
-  const username = ""; 
-
- 
-  const toggleMenuDrawer = (open) => (event) => {
-    if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
-    ) {
-      return;
-    }
-
-    setShowMenu(open);
-  };
-
-
   return (
     <div className="landing">
       <div className="burger-icon" onClick={() => setShowNav(!showNav)}>
@@ -45,11 +23,10 @@ const Dashboard = () => {
         <ul>
           <li><Link to='/userDashboard'>HOME</Link></li>
           <li><Link to="/userMenu">MENU</Link></li>
-          <li><Link to="/userAbout">About</Link></li>
+          <li><Link to="/userAbout">ABOUT</Link></li>
           <li><Link to="/userGallery">GALLERY</Link></li>
           <li><Link to="/userContact">CONTACT</Link></li>
           <li><Link to="/userTable">RESERVATION</Link></li>
-          
           <li><Link to="/">LOG OUT</Link></li>
         </ul>
       </div>
@@ -62,18 +39,18 @@ const Dashboard = () => {
           <div className="menuTauko">
             <h2>Menus</h2>
           </div>
+          <p>You can view our menu items from here. All and everything is exquisite and will make your taste buds tingle with joy.
+          </p>
           <div className="menuImage">
             <img src={lunch} alt="lunch" />
             <img src={dinner} alt="dinner" />
             <img src={dessert} alt="dessert" />
           </div>
         </div>
-        
         <div className="atag">
           <Link to="/userMenu">View All</Link>
         </div>
       </section>
-
       <section className="about">
         <div className="aboutHeader">
           <h2>About Us</h2>
@@ -94,13 +71,14 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-      <section className="gallery">
+      <hr />
+      <section className="galleryMain">
         <div className="galleryHeader">
           <h2>Gallery</h2>
           <p>Take a visual tour of our restaurant and dishes.</p>
           <div className="galleryImage">
             <img src={cake} alt="cake" />
-            <img src={dinner} alt="dinner" />
+            <img src={oreo} alt="dinner" />
             <img src={salad} alt="cake" />
           </div>
           <div className="atag">
@@ -108,6 +86,7 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
+      <hr />
       <section className="reservation">
         <div className="reservationHeader">
           <h2>Make a Reservation</h2>
